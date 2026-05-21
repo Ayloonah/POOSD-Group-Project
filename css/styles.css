@@ -1,3 +1,51 @@
 body {
     font-family: "Lustria", serif;
+    background-image: linear-gradient(to bottom, #3E77A9, #192F43 );
+    margin: 0;
+    padding: 0;
+}
+
+/* Style for the top banner */
+.topBanner{
+    background-color: #ffffff;
+    opacity: 0.95;
+    text-align: center;
+    font-size: 36px;
+    width: 100%;
+    height: 60px;
+}
+
+/* Style for the center white box */
+.centerBox {
+    background-color: #ffffff;
+    opacity: 0.95;
+    width: 750px;
+    height: 450px;
+    margin: 50px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Ensure the left and right sections of the center box take equal space */
+.centerBox div {
+    flex: 1;
+}
+
+/* Login form styles (Left side of Center Box) */
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Welcome message styles (Right side of Center Box) */
+.welcomeMessage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
