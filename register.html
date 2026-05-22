@@ -1,0 +1,39 @@
+<!-- Registration page for COP 4331 Small Project 1 -->
+
+<html>
+<head>
+	<title>Contact Book - Register</title>
+	<script type="text/javascript" src="js/md5.js"></script>
+	<script type="text/javascript" src="js/code.js"></script>
+    <link href="css/styles.css" rel="stylesheet">	
+    <link href="https://fonts.googleapis.com/css?family=Great+Vibes|Ubuntu" rel="stylesheet">
+</head>
+<body class="authPage">
+
+<h1 id="title">Contact Book</h1>
+
+<div id="registerDiv">
+	<span id="inner-title">Create Account</span>
+
+	<label for="registerFirstName">First Name</label>
+	<input type="text" id="registerFirstName" placeholder="First Name" /><br />
+
+	<label for="registerLastName">Last Name</label>
+	<input type="text" id="registerLastName" placeholder="Last Name" /><br />
+
+	<label for="registerLogin">Username</label>
+	<input type="text" id="registerLogin" placeholder="Username" /><br />
+
+	<label for="registerPassword">Password</label>
+	<input type="password" id="registerPassword" placeholder="Password" /><br />
+
+	<label for="registerConfirmPassword">Confirm Password</label>
+	<input type="password" id="registerConfirmPassword" placeholder="Confirm Password" /><br />
+
+	<button type="button" id="registerButton" class="buttons" onclick="doRegister();"> Create Account </button>
+	<span id="registerResult"></span>
+	<a id="backToLoginLink" href="index.html">Back to Login</a>
+</div>
+
+</body>
+</html>
