@@ -1,59 +1,162 @@
-// To be modified, this is the sample API code provided.
-
 <?php
 
-	$inData = getRequestInfo();
-	
-	$id = 0;
-	$firstName = "";
-	$lastName = "";
+    header("Content-Type: application/json");
 
-	$conn = new mysqli("localhost", "TheBeast", "WeLoveCOP4331", "COP4331"); 	
-	if( $conn->connect_error )
+	$inData = getRequestInfo();
+
+	$conn = new mysqli("localhost", "TheBeast", "WeLoveCOP4331", "COP4331");
+
+	if ($conn->connect_error)
 	{
 		returnWithError( $conn->connect_error );
+        exit();
 	}
-	else
-	{
-		$stmt = $conn->prepare("SELECT ID,firstName,lastName FROM Users WHERE Login=? AND Password =?");
-		$stmt->bind_param("ss", $inData["login"], $inData["password"]);
-		$stmt->execute();
-		$result = $stmt->get_result();
 
-		if( $row = $result->fetch_assoc()  )
-		{
-			returnWithInfo( $row['firstName'], $row['lastName'], $row['ID'] );
-		}
-		else
-		{
-			returnWithError("No Records Found");
-		}
+    if (!isset($indata["action"]))
+    {
+        returnWithError("Missing action");
+        exit();
+    }
 
-		$stmt->close();
-		$conn->close();
-	}
+    if ($indata["action"] == "login")
+    {
+        login($conn, $inData);
+    } 
+    else if ($indata["action"] == "register")
+    {
+        register($conn, $indata);
+    }
+    else
+    {
+        returnWithError("Invalid action");
+    }
+    
+    $conn->close();
+
+    function login($conn, $inData)
+    {
+        $stmt = $conn->prepare(
+            "SELECT ID, FirstName, LastName, Password
+            FROM Users
+            WHERE Login=?"
+        );
+
+        $stmt->bind_param("s", $inData["login"]);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        if ($row = $result->fetch_assoc())
+        {
+            if (password_verify($inData["password"], $row["password"]))
+            {
+                returnWithInfo(
+                    $row["FirstName"],
+                    $row["LastName"],
+                    $row["ID"]
+                );
+            }
+            else
+            {
+                returnWithError("Invalid login or password");
+            }
+        }
+        else
+        {
+            returnWithError("Invalid login or password");
+        }
+
+        $stmt->close();
+    }
+
+    function register($conn, $inData)
+    {
+        $checkStmt = $conn->prepare(
+            "SELECT ID FROM Users WHERE Login=?"
+        );
+
+        $checkStmt->bind_param("s", $inData["login"]);
+        $checkStmt->execute();
+
+        $checkResult = $checkStmt->get_result();
+
+        if ($checkResult->fetch_assoc())
+        {
+            returnWithError("Login already exists");
+            $checkStmt->close();
+            return;
+        }
+
+        $checkStmt->close();
+
+        $hashedPassword = password_hash(
+            $inData["password"], 
+            PASSWORD_DEFAULT
+        );
+
+        $stmt = $conn->prepare(
+            "INSERT INTO Users
+            (FirstName, LastName, Login, Password)
+            VALUES (?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param(
+            "ssss",
+            $inData["firstName"],
+            $inData["lastName"],
+            $inData["login"],
+            $hashedPassword
+        );
+
+        if ($stmt->execute())
+        {
+            returnWithInfo(
+                $inData["firstName"],
+                $inData["lastName"],
+                $conn->insert_id
+            );
+        }
+        else
+        {
+            returnWithError("Registration failed");
+        }
+
+        $stmt->close();
+    }
 	
 	function getRequestInfo()
 	{
-		return json_decode(file_get_contents('php://input'), true);
+		return json_decode(
+            file_get_contents('php://input'),
+            true
+        );
 	}
 
-	function sendResultInfoAsJson( $obj )
+	function sendResultInfoAsJson($obj)
 	{
-		header('Content-type: application/json');
 		echo $obj;
 	}
 	
-	function returnWithError( $err )
+	function returnWithError($err)
 	{
-		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
-		sendResultInfoAsJson( $retValue );
+		$retValue = 
+            '{"id":0,"firstName":"","lastName":"","error":"' .
+            $err .
+            '"}';
+		sendResultInfoAsJson($retValue);
 	}
 	
-	function returnWithInfo( $firstName, $lastName, $id )
+	function returnWithInfo($firstName, $lastName, $id)
 	{
-		$retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
-		sendResultInfoAsJson( $retValue );
+		$retValue = 
+            '{"id":' .
+            $id . 
+            ',"firstName":"' .
+            $firstName . 
+            '","lastName":"' . 
+            $lastName . 
+            '","error":""}';
+		sendResultInfoAsJson($retValue);
 	}
 	
 ?>
