@@ -48,7 +48,7 @@
 
         if ($row = $result->fetch_assoc())
         {
-            if (password_verify($inData["password"], $row["password"]))
+            if (password_verify($inData["password"], $row["Password"]))
             {
                 returnWithInfo(
                     $row["FirstName"],
