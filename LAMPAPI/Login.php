@@ -12,19 +12,19 @@
         exit();
 	}
 
-    if (!isset($indata["action"]))
+    if (!isset($inData["action"]))
     {
         returnWithError("Missing action");
         exit();
     }
 
-    if ($indata["action"] == "login")
+    if ($inData["action"] == "login")
     {
         login($conn, $inData);
     } 
-    else if ($indata["action"] == "register")
+    else if ($inData["action"] == "register")
     {
-        register($conn, $indata);
+        register($conn, $inData);
     }
     else
     {
