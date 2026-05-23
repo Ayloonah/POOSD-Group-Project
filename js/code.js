@@ -61,6 +61,91 @@ function doLogin()
 
 }
 
+function setRegisterMessage(message, isSuccess)
+{
+	let result = document.getElementById("registerResult");
+	result.innerHTML = message;
+	result.className = isSuccess ? "successMessage" : "errorMessage";
+}
+
+function doRegister()
+{
+	let firstName = document.getElementById("registerFirstName").value.trim();
+	let lastName = document.getElementById("registerLastName").value.trim();
+	let login = document.getElementById("registerLogin").value.trim();
+	let password = document.getElementById("registerPassword").value;
+	let confirmPassword = document.getElementById("registerConfirmPassword").value;
+
+	setRegisterMessage("", false);
+
+	if( firstName == "" || lastName == "" || login == "" || password == "" || confirmPassword == "" )
+	{
+		setRegisterMessage("Please fill in all fields.", false);
+		return;
+	}
+
+	if( password != confirmPassword )
+	{
+		setRegisterMessage("Passwords do not match.", false);
+		return;
+	}
+
+	let tmp = {firstName:firstName,lastName:lastName,login:login,password:password};
+	let jsonPayload = JSON.stringify( tmp );
+
+	let url = urlBase + '/Register.' + extension;
+
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	try
+	{
+		xhr.onreadystatechange = function()
+		{
+			if( this.readyState == 4 )
+			{
+				if( this.status != 200 )
+				{
+					setRegisterMessage("Registration service is unavailable. Please try again.", false);
+					return;
+				}
+
+				let jsonObject;
+				try
+				{
+					jsonObject = JSON.parse( xhr.responseText );
+				}
+				catch(err)
+				{
+					setRegisterMessage("Registration response was not valid. Please try again.", false);
+					return;
+				}
+
+				if( jsonObject.error != "" )
+				{
+					setRegisterMessage(jsonObject.error, false);
+					return;
+				}
+
+				setRegisterMessage("Account created successfully. Redirecting to login...", true);
+				setTimeout(function()
+				{
+					window.location.href = "index.html";
+				}, 1500);
+			}
+		};
+		xhr.onerror = function()
+		{
+			setRegisterMessage("Could not reach the registration service. Please check your connection.", false);
+		};
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		setRegisterMessage(err.message, false);
+	}
+}
+
 function saveCookie()
 {
 	let minutes = 20;
