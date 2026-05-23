@@ -1,5 +1,7 @@
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Contact Book </title>
 
     <!-- Reference to Lustria font on Google Fonts -->
@@ -9,6 +11,7 @@
     
     <!--Reference to style sheet, IMPORTANT: href needs to be updated once imported to GITHUB-->
     <link href="css/styles.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="js/code.js"></script>
 </head>
 
 <body>
@@ -24,11 +27,16 @@
             but will likely need to be updated to fit the needs of our application -->
         <div class="loginForm"> 
             <p class="formTitle"> Sign In </p>
-            <form action="login.php" method="post">
-                <input type="text" id="username" name="username" placeholder="USERNAME"><br>
-                <input type="password" id="password" name="password" placeholder="PASSWORD"><br><br>
-                <input type="submit" value="Login">
+            <form onsubmit="return false;">
+                <label for="loginName">Username</label>
+                <input type="text" id="loginName" name="loginName" placeholder="USERNAME" autocomplete="username"><br>
+
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" name="loginPassword" placeholder="PASSWORD" autocomplete="current-password"><br><br>
+
+                <button type="button" id="loginButton" onclick="doLogin();">Login</button>
             </form>
+            <span id="loginResult" aria-live="polite"></span>
 
             <!-- THIS IS NOT REVIEWED WILL NEED TO BE UPDATED -->
             <p class="UseOurSite"> Don't have an account? <a href="register.html">Register here</a></p>
