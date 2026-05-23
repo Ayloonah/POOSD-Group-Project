@@ -88,6 +88,23 @@ body {
     background-color: #2d5c85;
 }
 
+#registerButton:disabled {
+    background-color: #8aa8c2;
+    cursor: wait;
+}
+
+#loginButton:disabled {
+    cursor: wait;
+}
+
+#loginResult {
+    display: block;
+    min-height: 22px;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
 #registerResult {
     display: block;
     min-height: 24px;

@@ -14,13 +14,20 @@ function doLogin()
 	firstName = "";
 	lastName = "";
 	
-	let login = document.getElementById("loginName").value;
+	let login = document.getElementById("loginName").value.trim();
 	let password = document.getElementById("loginPassword").value;
 //	var hash = md5( password );
 	
 	document.getElementById("loginResult").innerHTML = "";
 
-	let tmp = {login:login,password:password};
+	if( login == "" || password == "" )
+	{
+		document.getElementById("loginResult").innerHTML = "Please enter your username and password.";
+		document.getElementById("loginResult").className = "errorMessage";
+		return;
+	}
+
+	let tmp = {action:"login",login:login,password:password};
 //	var tmp = {login:login,password:hash};
 	let jsonPayload = JSON.stringify( tmp );
 	
@@ -28,35 +35,92 @@ function doLogin()
 
 	let xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
+	xhr.timeout = 10000;
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+	document.getElementById("loginButton").disabled = true;
+	document.getElementById("loginButton").innerHTML = "Logging in...";
+
+	xhr.onreadystatechange = function() 
+	{
+		if( this.readyState != 4 )
+		{
+			return;
+		}
+
+		document.getElementById("loginButton").disabled = false;
+		document.getElementById("loginButton").innerHTML = "Login";
+
+		if( this.status != 200 )
+		{
+			document.getElementById("loginResult").innerHTML = "The server returned an error. Please try again.";
+			document.getElementById("loginResult").className = "errorMessage";
+			return;
+		}
+
+		let jsonObject;
+
+		try
+		{
+			jsonObject = JSON.parse( xhr.responseText );
+		}
+		catch(err)
+		{
+			document.getElementById("loginResult").innerHTML = "The server response was not valid. Please try again.";
+			document.getElementById("loginResult").className = "errorMessage";
+			return;
+		}
+
+		if( jsonObject.id == undefined || jsonObject.error == undefined )
+		{
+			document.getElementById("loginResult").innerHTML = "Login response was missing required data. Please try again.";
+			document.getElementById("loginResult").className = "errorMessage";
+			return;
+		}
+
+		userId = jsonObject.id;
+
+		if( userId < 1 )
+		{		
+			document.getElementById("loginResult").innerHTML = jsonObject.error;
+			document.getElementById("loginResult").className = "errorMessage";
+			return;
+		}
+
+		firstName = jsonObject.firstName;
+		lastName = jsonObject.lastName;
+
+		saveCookie();
+
+		window.location.href = "contact.html";
+	};
+
+	xhr.onerror = function()
+	{
+		document.getElementById("loginButton").disabled = false;
+		document.getElementById("loginButton").innerHTML = "Login";
+		document.getElementById("loginResult").innerHTML = "Could not reach the server. Please check your connection.";
+		document.getElementById("loginResult").className = "errorMessage";
+	};
+
+	xhr.ontimeout = function()
+	{
+		document.getElementById("loginButton").disabled = false;
+		document.getElementById("loginButton").innerHTML = "Login";
+		document.getElementById("loginResult").innerHTML = "The server is taking too long to respond. Please try again.";
+		document.getElementById("loginResult").className = "errorMessage";
+	};
+
 	try
 	{
-		xhr.onreadystatechange = function() 
-		{
-			if (this.readyState == 4 && this.status == 200) 
-			{
-				let jsonObject = JSON.parse( xhr.responseText );
-				userId = jsonObject.id;
-		
-				if( userId < 1 )
-				{		
-					document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
-					return;
-				}
-		
-				firstName = jsonObject.firstName;
-				lastName = jsonObject.lastName;
-
-				saveCookie();
-	
-				window.location.href = "color.html";
-			}
-		};
 		xhr.send(jsonPayload);
 	}
 	catch(err)
 	{
+		document.getElementById("loginButton").disabled = false;
+		document.getElementById("loginButton").innerHTML = "Login";
 		document.getElementById("loginResult").innerHTML = err.message;
+		document.getElementById("loginResult").className = "errorMessage";
 	}
 
 }
@@ -65,7 +129,31 @@ function setRegisterMessage(message, isSuccess)
 {
 	let result = document.getElementById("registerResult");
 	result.innerHTML = message;
-	result.className = isSuccess ? "successMessage" : "errorMessage";
+
+	if( isSuccess )
+	{
+		result.className = "successMessage";
+	}
+	else
+	{
+		result.className = "errorMessage";
+	}
+}
+
+function setRegisterButtonLoading(isLoading)
+{
+	let registerButton = document.getElementById("registerButton");
+
+	if( isLoading )
+	{
+		registerButton.disabled = true;
+		registerButton.innerHTML = "Creating...";
+	}
+	else
+	{
+		registerButton.disabled = false;
+		registerButton.innerHTML = "Create Account";
+	}
 }
 
 function doRegister()
@@ -95,53 +183,78 @@ function doRegister()
 
 	let url = urlBase + '/Register.' + extension;
 
+	setRegisterButtonLoading(true);
+
 	let xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
+	xhr.timeout = 10000;
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+	xhr.onreadystatechange = function()
+	{
+		if( this.readyState != 4 )
+		{
+			return;
+		}
+
+		setRegisterButtonLoading(false);
+
+		if( this.status != 200 )
+		{
+			setRegisterMessage("The server returned an error. Please try again.", false);
+			return;
+		}
+
+		let jsonObject;
+
+		try
+		{
+			jsonObject = JSON.parse( xhr.responseText );
+		}
+		catch(err)
+		{
+			setRegisterMessage("The server response was not valid. Please try again.", false);
+			return;
+		}
+
+		if( jsonObject.error == undefined )
+		{
+			setRegisterMessage("Registration response was missing required data. Please try again.", false);
+			return;
+		}
+
+		if( jsonObject.error != "" )
+		{
+			setRegisterMessage(jsonObject.error, false);
+			return;
+		}
+
+		setRegisterMessage("Account created successfully. Redirecting to login...", true);
+		setTimeout(function()
+		{
+			window.location.href = "index.html";
+		}, 1500);
+	};
+
+	xhr.onerror = function()
+	{
+		setRegisterButtonLoading(false);
+		setRegisterMessage("Could not reach the server. Please check your connection.", false);
+	};
+
+	xhr.ontimeout = function()
+	{
+		setRegisterButtonLoading(false);
+		setRegisterMessage("The server is taking too long to respond. Please try again.", false);
+	};
+
 	try
 	{
-		xhr.onreadystatechange = function()
-		{
-			if( this.readyState == 4 )
-			{
-				if( this.status != 200 )
-				{
-					setRegisterMessage("Registration service is unavailable. Please try again.", false);
-					return;
-				}
-
-				let jsonObject;
-				try
-				{
-					jsonObject = JSON.parse( xhr.responseText );
-				}
-				catch(err)
-				{
-					setRegisterMessage("Registration response was not valid. Please try again.", false);
-					return;
-				}
-
-				if( jsonObject.error != "" )
-				{
-					setRegisterMessage(jsonObject.error, false);
-					return;
-				}
-
-				setRegisterMessage("Account created successfully. Redirecting to login...", true);
-				setTimeout(function()
-				{
-					window.location.href = "index.html";
-				}, 1500);
-			}
-		};
-		xhr.onerror = function()
-		{
-			setRegisterMessage("Could not reach the registration service. Please check your connection.", false);
-		};
 		xhr.send(jsonPayload);
 	}
 	catch(err)
 	{
+		setRegisterButtonLoading(false);
 		setRegisterMessage(err.message, false);
 	}
 }
