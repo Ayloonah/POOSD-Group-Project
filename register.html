@@ -1,37 +1,40 @@
 <!-- Registration page for COP 4331 Small Project 1 -->
 
-<html>
+<html lang="en">
 <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Contact Book - Register</title>
 	<script type="text/javascript" src="js/md5.js"></script>
 	<script type="text/javascript" src="js/code.js"></script>
     <link href="css/styles.css" rel="stylesheet">	
-    <link href="https://fonts.googleapis.com/css?family=Great+Vibes|Ubuntu" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lustria&display=swap" rel="stylesheet">
 </head>
-<body class="authPage">
+<body class="registerPage">
 
-<h1 id="title">Contact Book</h1>
+<div class="topBanner">Contact Book</div>
 
 <div id="registerDiv">
 	<span id="inner-title">Create Account</span>
+	<p class="formHelp">Sign up to start saving your personal contacts.</p>
 
 	<label for="registerFirstName">First Name</label>
-	<input type="text" id="registerFirstName" placeholder="First Name" /><br />
+	<input type="text" id="registerFirstName" placeholder="First Name" autocomplete="given-name" /><br />
 
 	<label for="registerLastName">Last Name</label>
-	<input type="text" id="registerLastName" placeholder="Last Name" /><br />
+	<input type="text" id="registerLastName" placeholder="Last Name" autocomplete="family-name" /><br />
 
 	<label for="registerLogin">Username</label>
-	<input type="text" id="registerLogin" placeholder="Username" /><br />
+	<input type="text" id="registerLogin" placeholder="Username" autocomplete="username" /><br />
 
 	<label for="registerPassword">Password</label>
-	<input type="password" id="registerPassword" placeholder="Password" /><br />
+	<input type="password" id="registerPassword" placeholder="Password" autocomplete="new-password" /><br />
 
 	<label for="registerConfirmPassword">Confirm Password</label>
-	<input type="password" id="registerConfirmPassword" placeholder="Confirm Password" /><br />
+	<input type="password" id="registerConfirmPassword" placeholder="Confirm Password" autocomplete="new-password" /><br />
 
 	<button type="button" id="registerButton" class="buttons" onclick="doRegister();"> Create Account </button>
-	<span id="registerResult"></span>
+	<span id="registerResult" aria-live="polite"></span>
 	<a id="backToLoginLink" href="index.html">Back to Login</a>
 </div>
 
