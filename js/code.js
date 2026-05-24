@@ -1,7 +1,7 @@
 /* To be modified, this is the sample js code */
 
 
-const urlBase = 'http://COP4331-5.com/LAMPAPI';
+const urlBase = 'http://www.coppoosd.com/LAMPAPI';
 const extension = 'php';
 
 let userId = 0;
@@ -178,10 +178,10 @@ function doRegister()
 		return;
 	}
 
-	let tmp = {firstName:firstName,lastName:lastName,login:login,password:password};
+	let tmp = {action:"register",firstName:firstName,lastName:lastName,login:login,password:password};
 	let jsonPayload = JSON.stringify( tmp );
 
-	let url = urlBase + '/Register.' + extension;
+	let url = urlBase + '/Login.' + extension;
 
 	setRegisterButtonLoading(true);
 
@@ -307,6 +307,46 @@ function doLogout()
 	lastName = "";
 	document.cookie = "firstName= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
 	window.location.href = "index.html";
+}
+
+function showEmptyContacts()
+{
+	document.getElementById("emptyContactsMessage").style.display = "block";
+	document.getElementById("contactList").innerHTML = "";
+	document.getElementById("contactSearchResult").innerHTML = "";
+}
+
+function showDashboardMessage(message)
+{
+	document.getElementById("contactSearchResult").innerHTML = message;
+}
+
+function searchContacts()
+{
+	let searchText = document.getElementById("contactSearchText").value.trim();
+
+	if( searchText == "" )
+	{
+		showDashboardMessage("Please enter a name, phone, or email to search.");
+		return;
+	}
+
+	showDashboardMessage("Search API will show matching contacts here.");
+}
+
+function showAddContactMessage()
+{
+	showDashboardMessage("Add contact form will open here.");
+}
+
+function showEditContactMessage()
+{
+	showDashboardMessage("Select a contact first, then edit contact details here.");
+}
+
+function showDeleteContactMessage()
+{
+	showDashboardMessage("Select a contact first, then confirm delete here.");
 }
 
 function addColor()
