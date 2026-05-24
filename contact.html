@@ -1,41 +1,52 @@
-<!-- To be modified, this is the color.html code he gave us -->
-
-<html>
+<html lang="en">
 <head>
-	<title>COP 4331 LAMP Stack Demo</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Contact Book - Contacts</title>
 	<script type="text/javascript" src="js/code.js"></script>
-    <link href="css/styles.css" rel="stylesheet">	
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
-	
+	<link href="css/styles.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Lustria&display=swap" rel="stylesheet">
+
 	<script type="text/javascript">
-	document.addEventListener('DOMContentLoaded', function() 
+	document.addEventListener('DOMContentLoaded', function()
 	{
 		readCookie();
+		showEmptyContacts();
 	}, false);
 	</script>
-	
 </head>
-<body>
+<body class="dashboardPage">
 
-<h1 id="title">COP 4331 LAMP Stack Demo</h1>
+<div class="topBanner">Contact Book</div>
 
-<div id="loggedInDiv">
-	<span id="userName"></span><br />
-	<button type="button" id="logoutButton" class="buttons" onclick="doLogout();"> Log Out </button>
-</div>
+<div class="dashboardShell">
+	<div class="dashboardHeader">
+		<div>
+			<h1>My Contacts</h1>
+			<span id="userName"></span>
+		</div>
+		<button type="button" id="logoutButton" onclick="doLogout();">Logout</button>
+	</div>
 
-<div id="accessUIDiv">
-	<br />
+	<div class="dashboardTools">
+		<label for="contactSearchText">Search Contacts</label>
+		<div class="searchRow">
+			<input type="text" id="contactSearchText" placeholder="Search by name, phone, or email">
+			<button type="button" id="searchContactButton" onclick="searchContacts();">Search</button>
+		</div>
+		<span id="contactSearchResult" aria-live="polite"></span>
+	</div>
 
-	<input type="text" id="searchText" placeholder="Color To Search For"/>
-	<button type="button" id="searchColorButton" class="buttons" onclick="searchColor();"> Search Color </button><br />
-	<span id="colorSearchResult"></span>
-	<p id="colorList">
-	</p><br /><br />
+	<div class="contactActions">
+		<button type="button" id="addContactButton" onclick="showAddContactMessage();">Add Contact</button>
+		<button type="button" id="editContactButton" onclick="showEditContactMessage();">Edit Contact</button>
+		<button type="button" id="deleteContactButton" onclick="showDeleteContactMessage();">Delete Contact</button>
+	</div>
 
-	<input type="text" id="colorText" placeholder="Color To Add">
-	<button type="button" id="addColorButton" class="buttons" onclick="addColor();"> Add Color </button><br />
-	<span id="colorAddResult"></span>
+	<div id="contactListArea">
+		<p id="emptyContactsMessage">No contacts yet. Add your first contact to get started.</p>
+		<div id="contactList"></div>
+	</div>
 </div>
 
 </body>
