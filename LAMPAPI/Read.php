@@ -7,32 +7,31 @@
 	else
 	{
 		 $inData = getRequestInfo();
-         $searchResults = "";
-         $stmt = $conn->prepare("SELECT ID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID=? AND (FirstName LIKE ? OR LastName LIKE ?)");
-         $search = "%" . $inData["search"] . "%";
-         $stmt->bind_param("iss", $inData["userID"], $search, $search);
+         $results = "";
+         $stmt = $conn->prepare("SELECT ID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID=?");
+         $stmt->bind_param("i", $inData["userID"]);
          $stmt->execute();
          $result = $stmt->get_result();
          while($row = $result->fetch_assoc())
             {
-                if ($searchResults != "")
+                if ($results != "")
                     {
-                        $searchResults .= ",";
+                        $results .= ",";
                     }
-                    $searchResults .= '{"ID":"' . $row["ID"] . '",';
-                    $searchResults .= '"FirstName":"' . $row["FirstName"] . '",';
-                    $searchResults .= '"LastName":"' . $row["LastName"] . '",';
-                    $searchResults .= '"Phone":"' . $row["Phone"] . '",';
-                    $searchResults .= '"Email":"' . $row["Email"] . '"}';
+                    $results .= '{"ID":"' . $row["ID"] . '",';
+                    $results .= '"FirstName":"' . $row["FirstName"] . '",';
+                    $results .= '"LastName":"' . $row["LastName"] . '",';
+                    $results .= '"Phone":"' . $row["Phone"] . '",';
+                    $results .= '"Email":"' . $row["Email"] . '"}';
             }
-            if($searchResults == "")
+            if($results == "")
                 {
                     returnWithError("Contact Not Found!");
                     exit();
                 }
             else
                 {
-                    returnWithInfo($searchResults);
+                    returnWithInfo($results);
                 }
         $stmt->close();
 		$conn->close();
@@ -59,9 +58,9 @@
 		sendResultInfoAsJson($retValue);
 	}
 	
-	function returnWithInfo($searchResults)
+	function returnWithInfo($results)
 	{
-		$retValue = '{"results":[' . $searchResults . '],"error":""}';
+		$retValue = '{"results":[' . $results . '],"error":""}';
 		sendResultInfoAsJson($retValue);
 	}
 ?>
