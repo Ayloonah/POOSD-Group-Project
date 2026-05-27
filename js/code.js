@@ -292,7 +292,7 @@ function readCookie()
 	
 	if( userId < 0 )
 	{
-		window.location.href = "index.html";
+		//window.location.href = "index.html"; // READ: Commented out for testing purposes, uncomment for production
 	}
 	else
 	{

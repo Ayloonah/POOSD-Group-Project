@@ -5,7 +5,12 @@
 	<title>Contact Book - Contacts</title>
 	<script type="text/javascript" src="js/code.js"></script>
 	<link href="css/styles.css" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Lustria&display=swap" rel="stylesheet">
+	
+
+	<!--Reference to Lustria and Alex Brush font on Google Fonts for the top banner-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Lustria&display=swap" rel="stylesheet">
 
 	<script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', function()
@@ -15,39 +20,73 @@
 	}, false);
 	</script>
 </head>
+
 <body class="dashboardPage">
 
-<div class="topBanner">Contact Book</div>
-
-<div class="dashboardShell">
-	<div class="dashboardHeader">
-		<div>
-			<h1>My Contacts</h1>
-			<span id="userName"></span>
+	<div class="topBanner"> 
+		<div class="leftTools">
+			<div class="searchRow">
+				<input type="text" id="contactSearchText" placeholder="Search Contacts..." aria-label="Search Contacts">
+				<button type="button" id="searchContactButton" onclick="searchContacts();"> Search</button>
+			</div>
 		</div>
-		<button type="button" id="logoutButton" onclick="doLogout();">Logout</button>
+		<h1>Contact Book</h1>
+		<div class="rightTools">
+			<button type="button" id="logoutButton" onclick="doLogout();">Logout</button>
+		</div>
 	</div>
 
+	<div class="contactLayout">
+
+		<aside class="dashboardShell">
+			<!--<label for="contactSearchText">Search Contacts</label>--> <!-- Removing label for better UX, but may need to be added back in for accessibility reasons.-->
+			
+			<span id="contactSearchResult" aria-live="polite"></span>
+
+			<button type="button" id="addContactButton" onclick="showAddContactMessage();">Add Contact</button>
+		
+		</aside>
+
+		<div class="mainSpace">
+
+			<main class="contactArea">
+				<div class="noteCard">
+					<p id="emptyContactsMessage">Welcome to your Contact Book! Your contacts will appear here once you select them from the list to your left.</p>
+				</div>
+			</main>
+		</div>	
+	</div>
+
+<!-- <div class="dashboardShell">
+	<div class="dashboardHeader">
+		<div>
+			<h1>My Contacts</h1>  Moving somewhere else (undetermined), or removing later
+			<span id="userName"></span> MOVING User Name to Top Banner for better UX.
+		</div>
+		<button type="button" id="logoutButton" onclick="doLogout();">Logout</button> MOVING Loggout Button to Top Banner for better UX.
+	</div> 
+
 	<div class="dashboardTools">
-		<label for="contactSearchText">Search Contacts</label>
+		<label for="contactSearchText">Search Contacts</label> Removing label for better UX, but may need to be added back in for accessibility reasons.
 		<div class="searchRow">
-			<input type="text" id="contactSearchText" placeholder="Search by name, phone, or email">
+			<input type="text" id="contactSearchText" placeholder="Search Contacts..." aria-label="Search Contacts">
 			<button type="button" id="searchContactButton" onclick="searchContacts();">Search</button>
 		</div>
 		<span id="contactSearchResult" aria-live="polite"></span>
-	</div>
+	</div> -->
 
-	<div class="contactActions">
-		<button type="button" id="addContactButton" onclick="showAddContactMessage();">Add Contact</button>
+	<!-- <div class="contactActions"> 
+		<button type="button" id="addContactButton" onclick="showAddContactMessage();">Add Contact</button> MOVING Add Contact Button to bottom of contact list.
 		<button type="button" id="editContactButton" onclick="showEditContactMessage();">Edit Contact</button>
 		<button type="button" id="deleteContactButton" onclick="showDeleteContactMessage();">Delete Contact</button>
-	</div>
+	</div> 
 
 	<div id="contactListArea">
 		<p id="emptyContactsMessage">No contacts yet. Add your first contact to get started.</p>
 		<div id="contactList"></div>
 	</div>
-</div>
+	<button type="button" id="addContactButton" onclick="showAddContactMessage();">Add Contact</button>
+</div>-->
 
 </body>
 </html>

@@ -1,3 +1,4 @@
+
 body {
     font-family: "Lustria", serif;
     background-image: linear-gradient(to bottom, #3E77A9, #192F43 );
@@ -13,14 +14,32 @@ body {
     min-height: 100vh;
 }
 
+.contactLayout {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+}
+
 /* Style for the top banner */
 .topBanner{
     background-color: #ffffff;
     opacity: 0.95;
     text-align: center;
-    font-size: 36px;
+    font-size: 20px;
     width: 100%;
     height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.topBanner h1 {
+    font-family: "Alex Brush", cursive;
+    margin: 0;
+    text-align: center;
 }
 
 #registerDiv {
@@ -138,14 +157,39 @@ body {
     text-decoration: underline;
 }
 
+.mainArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.leftTools {
+    justify-self: start;    
+    display: flex;
+    gap: 8px;
+}
+
+.rightTools {
+    justify-self: end;
+}
+
+/* Style for left sidebar with Contact list of names in center and add contact button at the bottom */
 .dashboardShell {
-    width: min(1000px, calc(100% - 32px));
-    margin: 36px auto;
+    width: 250px;
+    height: 100vh;
+    background-color: #ffffff;
+    opacity: 0.95;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    /*margin: 36px auto;
     padding: 28px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
-    box-sizing: border-box;
+    box-sizing: border-box;*/
 }
 
 .dashboardHeader {
@@ -163,13 +207,15 @@ body {
     font-size: 34px;
 }
 
+
+
 #userName {
     color: #4f5d67;
     font-size: 16px;
 }
 
 #logoutButton,
-#searchContactButton,
+/*#searchContactButton,*/
 #addContactButton,
 #editContactButton,
 #deleteContactButton {
@@ -202,19 +248,28 @@ body {
     gap: 10px;
 }
 
-#contactSearchText {
-    flex: 1;
-    min-height: 42px;
-    padding: 10px 12px;
+.topBanner input[type="contactSearchText"] {
+    width: 150px;
+    height: 36px;
+    padding: 6px 10px;
+    font-size: 14px;
+    
+    /*flex: 1;
+    min-height: 24px;
     border: 1px solid #c8d1d8;
     border-radius: 6px;
     box-sizing: border-box;
     font-family: "Lustria", serif;
-    font-size: 16px;
+    font-size: 16px;*/
 }
 
 #searchContactButton {
-    width: 120px;
+    width: 60px;
+    height: 20px;
+    background-color: #3E77A9;
+    color: #ffffff;
+
+
 }
 
 #contactSearchResult {
@@ -234,9 +289,9 @@ body {
     flex: 1;
 }
 
-#deleteContactButton {
+/*#deleteContactButton {
     background-color: #8a1f11;
-}
+}*/ 
 
 #contactListArea {
     min-height: 260px;
@@ -258,6 +313,28 @@ body {
     display: grid;
     gap: 12px;
 }
+
+#addContactButton {
+    margin-top: auto;
+    align-self: center;
+    width: 80%;
+}
+
+.noteCard {
+    background-color: #ffffff;
+    opacity: 0.95;
+    width: 500px;
+    height: 300px;
+    margin: 50px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* START of Responsive design for mobile devices */
+/*--------------------------------------------------------------------------------------------------------------*/
 
 @media (max-width: 640px) {
     .topBanner {
@@ -295,9 +372,16 @@ body {
         margin-top: 10px;
     }
 }
+/*--------------------------------------------------------------------------------------------------------------*/
+/* END of Responsive Design for mobile devices */
 
-/* Style for the center white box */
-.centerBox {
+
+
+/* START of Style for the login page (index.html) */ 
+/*--------------------------------------------------------------------------------------------------------------*/
+
+/* Style for the center white box on login page (index.html)*/
+.centerBoxLogin {
     background-color: #ffffff;
     opacity: 0.95;
     width: 750px;
@@ -310,19 +394,19 @@ body {
     justify-content: space-between;
 }
 
-/* Ensure the left and right sections of the center box take equal space */
-.centerBox div {
+/* Ensure the left and right sections of the center box take equal space on login page (index.html) */
+.centerBoxLogin div {
     flex: 1;
 }
 
-/* Login form style (Left side of Center Box) */
+/* Login form style (Left side of Center Box) on login page (index.html)*/
 .loginForm {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-
+/* Style for "Sign in" title on login page (index.html)*/
 .formTitle { 
     font-size: 32px;
     opacity: 0.90;
@@ -330,7 +414,8 @@ body {
     margin-left: 75px;
 }
 
-input[type="text"], input[type="password"] {
+/* Style for the input fields (Username and Password Boxes) on login page (index.html)*/
+.loginForm input[type="text"], .loginForm input[type="password"] {
     font-family: "Lustria", serif;
     width: 200px;
     padding: 10px;
@@ -339,10 +424,12 @@ input[type="text"], input[type="password"] {
     border-radius: 5px;
 }
 
+/* Style for "Don't have an account? Sign up here!" text on login page (index.html)*/
 .UseOurSite {
     font-size: 14px;
 }
 
+/* Style for the "Login" Button on login page (index.html) */
 input[type="button"], #loginButton{
     font-family: "Lustria", serif;
     background-color: #3E77A9;
@@ -357,11 +444,12 @@ input[type="button"], #loginButton{
     margin-left: 50px;
 }
 
+/* Style for the "Login" Button when hovered over it on Login Page (index.html)*/
 input[type="button"], #loginButton:hover {
     background-color: #476B8A;
 }
 
-/* Welcome message style (Right side of Center Box) */
+/* Welcome message style (Right side of Center Box) for login page (index.html) */
 .welcomeMessage{
     display: flex;
     flex-direction: column;
@@ -382,3 +470,5 @@ input[type="button"], #loginButton:hover {
         transform: translateX(-3px);
     }
 }
+/*--------------------------------------------------------------------------------------------------------------*/
+/* END of Style for the login page (index.html) */
