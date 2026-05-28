@@ -27,7 +27,12 @@
 		<div class="leftTools">
 			<div class="searchRow">
 				<input type="text" id="contactSearchText" placeholder="Search Contacts..." aria-label="Search Contacts">
-				<button type="button" id="searchContactButton" onclick="searchContacts();"> Search</button>
+				<button type="button" id="searchContactButton" title="Search Contacts" onclick="searchContacts();">
+					<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="searchIcon">
+						<circle cx="11" cy="11" r="8"></circle>
+						<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+					</svg>
+				</button>
 			</div>
 		</div>
 		<h1>Contact Book</h1>
@@ -40,7 +45,8 @@
 
 		<aside class="dashboardShell">
 			<!--<label for="contactSearchText">Search Contacts</label>--> <!-- Removing label for better UX, but may need to be added back in for accessibility reasons.-->
-			
+			<h1 class="contactListHeader">Your Contacts</h1> <!-- WE CAN TRY TO PERSONALIZE THIS LATER, WITH THE USERS NAME NEXT TO "CONTACT" (E.G John's Contacts)-->
+			<hr>
 			<span id="contactSearchResult" aria-live="polite"></span>
 
 			<button type="button" id="addContactButton" onclick="showAddContactMessage();">Add Contact</button>
@@ -50,7 +56,7 @@
 		<div class="mainSpace">
 
 			<main class="contactArea">
-				<div class="noteCard">
+				<div class="contactCard">
 					<p id="emptyContactsMessage">Welcome to your Contact Book! Your contacts will appear here once you select them from the list to your left.</p>
 				</div>
 			</main>

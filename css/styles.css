@@ -1,4 +1,3 @@
-
 body {
     font-family: "Lustria", serif;
     background-image: linear-gradient(to bottom, #3E77A9, #192F43 );
@@ -23,9 +22,9 @@ body {
 /* Style for the top banner */
 .topBanner{
     background-color: #ffffff;
-    opacity: 0.95;
+    opacity: 0.80;
     text-align: center;
-    font-size: 20px;
+    font-size: 30px;
     width: 100%;
     height: 60px;
 
@@ -38,8 +37,10 @@ body {
 
 .topBanner h1 {
     font-family: "Alex Brush", cursive;
+    opacity: 0.85;
     margin: 0;
-    text-align: center;
+    margin: 0 auto; 
+    width: 80%; /* or max-width */
 }
 
 #registerDiv {
@@ -175,10 +176,10 @@ body {
 
 /* Style for left sidebar with Contact list of names in center and add contact button at the bottom */
 .dashboardShell {
-    width: 250px;
+    width: 225px;
     height: 100vh;
     background-color: #ffffff;
-    opacity: 0.95;
+    opacity: 0.80;
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
@@ -216,7 +217,7 @@ body {
 
 #logoutButton,
 /*#searchContactButton,*/
-#addContactButton,
+/*#addContactButton,*/
 #editContactButton,
 #deleteContactButton {
     min-height: 40px;
@@ -227,6 +228,21 @@ body {
     cursor: pointer;
     font-family: "Lustria", serif;
     font-size: 15px;
+}
+
+#addContactButton {
+    background-color: #3E77A9;
+    min-height: 24px;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: "Lustria", serif;
+    font-size: 13px;
+    border: 0;
+    border-radius: 6px;
+}
+
+#addContactButton:hover {
+    background-color: #2d5c85;
 }
 
 #logoutButton {
@@ -248,28 +264,42 @@ body {
     gap: 10px;
 }
 
-.topBanner input[type="contactSearchText"] {
+.topBanner input[id="contactSearchText"] {
     width: 150px;
-    height: 36px;
+    height: 24px;
     padding: 6px 10px;
     font-size: 14px;
+    border-radius: 25px;
+    border: 1px solid #c8d1d8;
     
     /*flex: 1;
     min-height: 24px;
-    border: 1px solid #c8d1d8;
-    border-radius: 6px;
     box-sizing: border-box;
     font-family: "Lustria", serif;
     font-size: 16px;*/
 }
 
+/* Style for the search button next to the search box on contact page (contact.html) */
+/* Its just the magnifying glass icon, so I removed the background and border.*/
 #searchContactButton {
-    width: 60px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #3E77A9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*width: 60px;
     height: 20px;
     background-color: #3E77A9;
-    color: #ffffff;
+    color: #ffffff;*/
+}
 
-
+/* Style for the search button when hovered over it on contact page (contact.html) */
+#searchContactButton:hover {
+    color: #476B8A;
+    
 }
 
 #contactSearchResult {
@@ -293,6 +323,12 @@ body {
     background-color: #8a1f11;
 }*/ 
 
+.contactListHeader {
+    font-size: 14px;
+    color: #192F43;
+    margin-bottom: 12px;
+    align-self: center;
+}
 #contactListArea {
     min-height: 260px;
     margin-top: 24px;
@@ -320,17 +356,23 @@ body {
     width: 80%;
 }
 
-.noteCard {
+.mainSpace {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.contactCard {
     background-color: #ffffff;
-    opacity: 0.95;
-    width: 500px;
-    height: 300px;
+    opacity: 0.80;
+    width: 600px;
+    height: 450px;
     margin: 50px auto;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 /* START of Responsive design for mobile devices */
@@ -364,7 +406,7 @@ body {
     }
 
     #logoutButton,
-    #searchContactButton,
+    /*#searchContactButton,*/
     #addContactButton,
     #editContactButton,
     #deleteContactButton {
@@ -383,7 +425,7 @@ body {
 /* Style for the center white box on login page (index.html)*/
 .centerBoxLogin {
     background-color: #ffffff;
-    opacity: 0.95;
+    opacity: 0.85;
     width: 750px;
     height: 450px;
     margin: 50px auto;
