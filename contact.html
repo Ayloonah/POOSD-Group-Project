@@ -48,6 +48,7 @@
 			<h1 class="contactListHeader">Your Contacts</h1> <!-- WE CAN TRY TO PERSONALIZE THIS LATER, WITH THE USERS NAME NEXT TO "CONTACT" (E.G John's Contacts)-->
 			<hr>
 			<span id="contactSearchResult" aria-live="polite"></span>
+			<div id="contactList"></div>
 
 			<button type="button" id="addContactButton" onclick="showAddContactMessage();">Add Contact</button>
 		
@@ -58,6 +59,53 @@
 			<main class="contactArea">
 				<div class="contactCard">
 					<p id="emptyContactsMessage">Welcome to your Contact Book! Your contacts will appear here once you select them from the list to your left.</p>
+					<div id="contactCardDetails"></div>
+
+					<div id="addContactForm">
+						<h2>Add Contact</h2>
+
+						<label for="contactFirstName">First Name</label>
+						<input type="text" id="contactFirstName" placeholder="First Name">
+
+						<label for="contactLastName">Last Name</label>
+						<input type="text" id="contactLastName" placeholder="Last Name">
+
+						<label for="contactPhone">Phone</label>
+						<input type="text" id="contactPhone" placeholder="Phone Number">
+
+						<label for="contactEmail">Email</label>
+						<input type="text" id="contactEmail" placeholder="Email Address">
+
+						<div class="formButtonRow">
+							<button type="button" id="createContactButton" onclick="createContact();">Save Contact</button>
+							<button type="button" id="cancelContactButton" onclick="cancelAddContact();">Cancel</button>
+						</div>
+
+						<span id="addContactResult" aria-live="polite"></span>
+					</div>
+
+					<div id="editContactForm">
+						<h2>Edit Contact</h2>
+
+						<label for="editContactFirstName">First Name</label>
+						<input type="text" id="editContactFirstName" placeholder="First Name">
+
+						<label for="editContactLastName">Last Name</label>
+						<input type="text" id="editContactLastName" placeholder="Last Name">
+
+						<label for="editContactPhone">Phone</label>
+						<input type="text" id="editContactPhone" placeholder="Phone Number">
+
+						<label for="editContactEmail">Email</label>
+						<input type="text" id="editContactEmail" placeholder="Email Address">
+
+						<div class="formButtonRow">
+							<button type="button" id="updateContactButton" onclick="updateContact();">Update Contact</button>
+							<button type="button" id="cancelEditContactButton" onclick="cancelEditContact();">Cancel</button>
+						</div>
+
+						<span id="editContactResult" aria-live="polite"></span>
+					</div>
 				</div>
 			</main>
 		</div>	

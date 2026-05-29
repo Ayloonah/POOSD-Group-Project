@@ -375,6 +375,106 @@ body {
     justify-content: center;
 }
 
+#addContactForm,
+#editContactForm {
+    display: none;
+    width: 80%;
+}
+
+#addContactForm h2,
+#editContactForm h2,
+#contactCardDetails h2 {
+    color: #192F43;
+    text-align: center;
+}
+
+#addContactForm label,
+#editContactForm label {
+    display: block;
+    margin-top: 10px;
+    color: #192F43;
+}
+
+#addContactForm input[type="text"],
+#editContactForm input[type="text"] {
+    width: 100%;
+    min-height: 34px;
+    padding: 8px;
+    border: 1px solid #c8d1d8;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-family: "Lustria", serif;
+}
+
+.formButtonRow {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+#createContactButton,
+#cancelContactButton,
+#updateContactButton,
+#cancelEditContactButton,
+#openEditContactButton {
+    flex: 1;
+    min-height: 36px;
+    border: 0;
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: "Lustria", serif;
+}
+
+#createContactButton {
+    background-color: #3E77A9;
+}
+
+#updateContactButton {
+    background-color: #3E77A9;
+}
+
+#cancelContactButton,
+#cancelEditContactButton {
+    background-color: #476B8A;
+}
+
+#openEditContactButton {
+    width: 100%;
+    margin-top: 12px;
+    background-color: #3E77A9;
+}
+
+#addContactResult,
+#editContactResult {
+    display: block;
+    min-height: 22px;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.contactListButton {
+    width: 100%;
+    min-height: 34px;
+    margin-top: 8px;
+    border: 0;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #192F43;
+    cursor: pointer;
+    font-family: "Lustria", serif;
+}
+
+.contactListButton:hover {
+    background-color: #d9e4ed;
+}
+
+#contactCardDetails {
+    display: none;
+    color: #192F43;
+    font-size: 18px;
+}
+
 /* START of Responsive design for mobile devices */
 /*--------------------------------------------------------------------------------------------------------------*/
 

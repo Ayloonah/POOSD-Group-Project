@@ -8,6 +8,14 @@ let userId = 0;
 let firstName = "";
 let lastName = "";
 
+// These variables remember which contact the user clicked on.
+let selectedContactID = 0;
+let selectedContactFirstName = "";
+let selectedContactLastName = "";
+let selectedContactPhone = "";
+let selectedContactEmail = "";
+let selectedContactButton = null;
+
 function doLogin()
 {
 	userId = 0;
@@ -312,6 +320,10 @@ function doLogout()
 function showEmptyContacts()
 {
 	document.getElementById("emptyContactsMessage").style.display = "block";
+	document.getElementById("addContactForm").style.display = "none";
+	document.getElementById("editContactForm").style.display = "none";
+	document.getElementById("contactCardDetails").style.display = "none";
+	document.getElementById("contactCardDetails").innerHTML = "";
 	document.getElementById("contactList").innerHTML = "";
 	document.getElementById("contactSearchResult").innerHTML = "";
 }
@@ -336,91 +348,377 @@ function searchContacts()
 
 function showAddContactMessage()
 {
-	showDashboardMessage("Add contact form will open here.");
+	document.getElementById("emptyContactsMessage").style.display = "none";
+	document.getElementById("contactCardDetails").style.display = "none";
+	document.getElementById("editContactForm").style.display = "none";
+	document.getElementById("addContactForm").style.display = "block";
+	document.getElementById("addContactResult").innerHTML = "";
+	showDashboardMessage("Fill out the form to add a new contact.");
+}
+
+function cancelAddContact()
+{
+	document.getElementById("contactFirstName").value = "";
+	document.getElementById("contactLastName").value = "";
+	document.getElementById("contactPhone").value = "";
+	document.getElementById("contactEmail").value = "";
+	document.getElementById("addContactResult").innerHTML = "";
+	document.getElementById("addContactForm").style.display = "none";
+	document.getElementById("editContactForm").style.display = "none";
+	document.getElementById("contactCardDetails").style.display = "none";
+	document.getElementById("emptyContactsMessage").style.display = "block";
+	showDashboardMessage("");
+}
+
+function addContactToList(firstName, lastName, phone, email, contactID)
+{
+	let contactList = document.getElementById("contactList");
+	let newContact = document.createElement("button");
+	let fullName = firstName + " " + lastName;
+
+	if( contactID == undefined )
+	{
+		contactID = 0;
+	}
+
+	newContact.type = "button";
+	newContact.className = "contactListButton";
+	newContact.innerHTML = fullName;
+
+	newContact.onclick = function()
+	{
+		selectedContactButton = newContact;
+		selectContact(contactID, firstName, lastName, phone, email);
+	};
+
+	contactList.appendChild(newContact);
+}
+
+function selectContact(contactID, firstName, lastName, phone, email)
+{
+	selectedContactID = contactID;
+	selectedContactFirstName = firstName;
+	selectedContactLastName = lastName;
+	selectedContactPhone = phone;
+	selectedContactEmail = email;
+
+	let contactDetails = "";
+	contactDetails += "<h2>" + firstName + " " + lastName + "</h2>";
+	contactDetails += "<p>Phone: " + phone + "</p>";
+	contactDetails += "<p>Email: " + email + "</p>";
+	contactDetails += '<button type="button" id="openEditContactButton" onclick="showEditContactMessage();">Edit Contact</button>';
+
+	document.getElementById("emptyContactsMessage").style.display = "none";
+	document.getElementById("addContactForm").style.display = "none";
+	document.getElementById("editContactForm").style.display = "none";
+	document.getElementById("contactCardDetails").innerHTML = contactDetails;
+	document.getElementById("contactCardDetails").style.display = "block";
+
+	showDashboardMessage("");
+}
+
+function createContact()
+{
+	let contactFirstName = document.getElementById("contactFirstName").value.trim();
+	let contactLastName = document.getElementById("contactLastName").value.trim();
+	let contactPhone = document.getElementById("contactPhone").value.trim();
+	let contactEmail = document.getElementById("contactEmail").value.trim();
+
+	document.getElementById("addContactResult").innerHTML = "";
+
+	if( contactFirstName == "" || contactLastName == "" || contactPhone == "" || contactEmail == "" )
+	{
+		document.getElementById("addContactResult").innerHTML = "Please fill in all contact fields.";
+		document.getElementById("addContactResult").className = "errorMessage";
+		return;
+	}
+
+	if( userId < 1 )
+	{
+		document.getElementById("addContactResult").innerHTML = "You must be logged in to add contacts.";
+		document.getElementById("addContactResult").className = "errorMessage";
+		return;
+	}
+
+	let tmp = {
+		firstName: contactFirstName,
+		lastName: contactLastName,
+		phone: contactPhone,
+		email: contactEmail,
+		userID: userId
+	};
+
+	let jsonPayload = JSON.stringify( tmp );
+	let url = urlBase + '/Create.' + extension;
+
+	document.getElementById("createContactButton").disabled = true;
+	document.getElementById("createContactButton").innerHTML = "Saving...";
+
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.timeout = 10000;
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+	xhr.onreadystatechange = function()
+	{
+		if( this.readyState != 4 )
+		{
+			return;
+		}
+
+		document.getElementById("createContactButton").disabled = false;
+		document.getElementById("createContactButton").innerHTML = "Save Contact";
+
+		if( this.status != 200 )
+		{
+			document.getElementById("addContactResult").innerHTML = "The server returned an error. Please try again.";
+			document.getElementById("addContactResult").className = "errorMessage";
+			return;
+		}
+
+		let jsonObject;
+
+		try
+		{
+			jsonObject = JSON.parse( xhr.responseText );
+		}
+		catch(err)
+		{
+			document.getElementById("addContactResult").innerHTML = "The server response was not valid. Please try again.";
+			document.getElementById("addContactResult").className = "errorMessage";
+			return;
+		}
+
+		if( jsonObject.error == undefined )
+		{
+			document.getElementById("addContactResult").innerHTML = "Create response was missing required data.";
+			document.getElementById("addContactResult").className = "errorMessage";
+			return;
+		}
+
+		if( jsonObject.error != "" )
+		{
+			document.getElementById("addContactResult").innerHTML = jsonObject.error;
+			document.getElementById("addContactResult").className = "errorMessage";
+			return;
+		}
+
+		document.getElementById("addContactResult").innerHTML = "Contact added successfully.";
+		document.getElementById("addContactResult").className = "successMessage";
+		addContactToList(contactFirstName, contactLastName, contactPhone, contactEmail, 0);
+
+		document.getElementById("contactFirstName").value = "";
+		document.getElementById("contactLastName").value = "";
+		document.getElementById("contactPhone").value = "";
+		document.getElementById("contactEmail").value = "";
+	};
+
+	xhr.onerror = function()
+	{
+		document.getElementById("createContactButton").disabled = false;
+		document.getElementById("createContactButton").innerHTML = "Save Contact";
+		document.getElementById("addContactResult").innerHTML = "Could not reach the server. Please check your connection.";
+		document.getElementById("addContactResult").className = "errorMessage";
+	};
+
+	xhr.ontimeout = function()
+	{
+		document.getElementById("createContactButton").disabled = false;
+		document.getElementById("createContactButton").innerHTML = "Save Contact";
+		document.getElementById("addContactResult").innerHTML = "The server is taking too long to respond. Please try again.";
+		document.getElementById("addContactResult").className = "errorMessage";
+	};
+
+	try
+	{
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		document.getElementById("createContactButton").disabled = false;
+		document.getElementById("createContactButton").innerHTML = "Save Contact";
+		document.getElementById("addContactResult").innerHTML = err.message;
+		document.getElementById("addContactResult").className = "errorMessage";
+	}
 }
 
 function showEditContactMessage()
 {
-	showDashboardMessage("Select a contact first, then edit contact details here.");
+	if( selectedContactFirstName == "" )
+	{
+		showDashboardMessage("Select a contact first, then edit contact details here.");
+		return;
+	}
+
+	if( selectedContactID < 1 )
+	{
+		showDashboardMessage("This contact must be loaded from the server before it can be edited.");
+		return;
+	}
+
+	document.getElementById("emptyContactsMessage").style.display = "none";
+	document.getElementById("addContactForm").style.display = "none";
+	document.getElementById("contactCardDetails").style.display = "none";
+	document.getElementById("editContactForm").style.display = "block";
+
+	document.getElementById("editContactFirstName").value = selectedContactFirstName;
+	document.getElementById("editContactLastName").value = selectedContactLastName;
+	document.getElementById("editContactPhone").value = selectedContactPhone;
+	document.getElementById("editContactEmail").value = selectedContactEmail;
+	document.getElementById("editContactResult").innerHTML = "";
+	showDashboardMessage("Edit the contact and click Update Contact.");
+}
+
+function cancelEditContact()
+{
+	document.getElementById("editContactForm").style.display = "none";
+	document.getElementById("editContactResult").innerHTML = "";
+
+	if( selectedContactFirstName == "" )
+	{
+		document.getElementById("emptyContactsMessage").style.display = "block";
+	}
+	else
+	{
+		selectContact(selectedContactID, selectedContactFirstName, selectedContactLastName, selectedContactPhone, selectedContactEmail);
+	}
+}
+
+function updateContact()
+{
+	let editFirstName = document.getElementById("editContactFirstName").value.trim();
+	let editLastName = document.getElementById("editContactLastName").value.trim();
+	let editPhone = document.getElementById("editContactPhone").value.trim();
+	let editEmail = document.getElementById("editContactEmail").value.trim();
+
+	document.getElementById("editContactResult").innerHTML = "";
+
+	if( editFirstName == "" || editLastName == "" || editPhone == "" || editEmail == "" )
+	{
+		document.getElementById("editContactResult").innerHTML = "Please fill in all contact fields.";
+		document.getElementById("editContactResult").className = "errorMessage";
+		return;
+	}
+
+	if( selectedContactID < 1 )
+	{
+		document.getElementById("editContactResult").innerHTML = "No saved contact is selected.";
+		document.getElementById("editContactResult").className = "errorMessage";
+		return;
+	}
+
+	let tmp = {
+		firstName: editFirstName,
+		lastName: editLastName,
+		phone: editPhone,
+		email: editEmail,
+		contactID: selectedContactID
+	};
+
+	let jsonPayload = JSON.stringify( tmp );
+	let url = urlBase + '/Update.' + extension;
+
+	document.getElementById("updateContactButton").disabled = true;
+	document.getElementById("updateContactButton").innerHTML = "Updating...";
+
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.timeout = 10000;
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+	xhr.onreadystatechange = function()
+	{
+		if( this.readyState != 4 )
+		{
+			return;
+		}
+
+		document.getElementById("updateContactButton").disabled = false;
+		document.getElementById("updateContactButton").innerHTML = "Update Contact";
+
+		if( this.status != 200 )
+		{
+			document.getElementById("editContactResult").innerHTML = "The server returned an error. Please try again.";
+			document.getElementById("editContactResult").className = "errorMessage";
+			return;
+		}
+
+		let jsonObject;
+
+		try
+		{
+			jsonObject = JSON.parse( xhr.responseText );
+		}
+		catch(err)
+		{
+			document.getElementById("editContactResult").innerHTML = "The server response was not valid. Please try again.";
+			document.getElementById("editContactResult").className = "errorMessage";
+			return;
+		}
+
+		if( jsonObject.error == undefined )
+		{
+			document.getElementById("editContactResult").innerHTML = "Update response was missing required data.";
+			document.getElementById("editContactResult").className = "errorMessage";
+			return;
+		}
+
+		if( jsonObject.error != "" )
+		{
+			document.getElementById("editContactResult").innerHTML = jsonObject.error;
+			document.getElementById("editContactResult").className = "errorMessage";
+			return;
+		}
+
+		selectedContactFirstName = editFirstName;
+		selectedContactLastName = editLastName;
+		selectedContactPhone = editPhone;
+		selectedContactEmail = editEmail;
+
+		if( selectedContactButton != null )
+		{
+			selectedContactButton.innerHTML = editFirstName + " " + editLastName;
+		}
+
+		document.getElementById("editContactResult").innerHTML = "Contact updated successfully.";
+		document.getElementById("editContactResult").className = "successMessage";
+
+		setTimeout(function()
+		{
+			selectContact(selectedContactID, selectedContactFirstName, selectedContactLastName, selectedContactPhone, selectedContactEmail);
+		}, 800);
+	};
+
+	xhr.onerror = function()
+	{
+		document.getElementById("updateContactButton").disabled = false;
+		document.getElementById("updateContactButton").innerHTML = "Update Contact";
+		document.getElementById("editContactResult").innerHTML = "Could not reach the server. Please check your connection.";
+		document.getElementById("editContactResult").className = "errorMessage";
+	};
+
+	xhr.ontimeout = function()
+	{
+		document.getElementById("updateContactButton").disabled = false;
+		document.getElementById("updateContactButton").innerHTML = "Update Contact";
+		document.getElementById("editContactResult").innerHTML = "The server is taking too long to respond. Please try again.";
+		document.getElementById("editContactResult").className = "errorMessage";
+	};
+
+	try
+	{
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		document.getElementById("updateContactButton").disabled = false;
+		document.getElementById("updateContactButton").innerHTML = "Update Contact";
+		document.getElementById("editContactResult").innerHTML = err.message;
+		document.getElementById("editContactResult").className = "errorMessage";
+	}
 }
 
 function showDeleteContactMessage()
 {
 	showDashboardMessage("Select a contact first, then confirm delete here.");
-}
-
-function addColor()
-{
-	let newColor = document.getElementById("colorText").value;
-	document.getElementById("colorAddResult").innerHTML = "";
-
-	let tmp = {color:newColor,userId,userId};
-	let jsonPayload = JSON.stringify( tmp );
-
-	let url = urlBase + '/AddColor.' + extension;
-	
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try
-	{
-		xhr.onreadystatechange = function() 
-		{
-			if (this.readyState == 4 && this.status == 200) 
-			{
-				document.getElementById("colorAddResult").innerHTML = "Color has been added";
-			}
-		};
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById("colorAddResult").innerHTML = err.message;
-	}
-	
-}
-
-function searchColor()
-{
-	let srch = document.getElementById("searchText").value;
-	document.getElementById("colorSearchResult").innerHTML = "";
-	
-	let colorList = "";
-
-	let tmp = {search:srch,userId:userId};
-	let jsonPayload = JSON.stringify( tmp );
-
-	let url = urlBase + '/SearchColors.' + extension;
-	
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try
-	{
-		xhr.onreadystatechange = function() 
-		{
-			if (this.readyState == 4 && this.status == 200) 
-			{
-				document.getElementById("colorSearchResult").innerHTML = "Color(s) has been retrieved";
-				let jsonObject = JSON.parse( xhr.responseText );
-				
-				for( let i=0; i<jsonObject.results.length; i++ )
-				{
-					colorList += jsonObject.results[i];
-					if( i < jsonObject.results.length - 1 )
-					{
-						colorList += "<br />\r\n";
-					}
-				}
-				
-				document.getElementsByTagName("p")[0].innerHTML = colorList;
-			}
-		};
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById("colorSearchResult").innerHTML = err.message;
-	}
-	
 }
