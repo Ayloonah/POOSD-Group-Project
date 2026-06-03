@@ -12,11 +12,24 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Lustria&display=swap" rel="stylesheet">
 
+	<!-- Reference to Material Symbols Outlined for the delete icon on the contact card -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=delete" />
+	<style>
+		.material-symbols-outlined {
+			font-variation-settings:
+			'FILL' 0,
+			'wght' 400,
+			'GRAD' 0,
+			'opsz' 24
+		}
+	</style>
+
 	<script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', function()
 	{
 		readCookie();
-		showEmptyContacts();
+		//showEmptyContacts();
+		loadMockContacts(); //DELETE THIS LATER OR COMMENT OUT LATER, ONLY FOR TESTING PURPOSES
 	}, false);
 	</script>
 </head>
@@ -26,8 +39,8 @@
 	<div class="topBanner"> 
 		<div class="leftTools">
 			<div class="searchRow">
-				<input type="text" id="contactSearchText" placeholder="Search Contacts..." aria-label="Search Contacts">
-				<button type="button" id="searchContactButton" title="Search Contacts" onclick="searchContacts();">
+				<input type="search" id="contactSearchText" placeholder="Search Contacts..." aria-label="Search Contacts" oninput="searchContacts();">
+				<button type="submit" id="searchContactButton" title="Search Contacts" onclick="searchContacts();">
 					<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="searchIcon">
 						<circle cx="11" cy="11" r="8"></circle>
 						<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -46,7 +59,6 @@
 		<aside class="dashboardShell">
 			<!--<label for="contactSearchText">Search Contacts</label>--> <!-- Removing label for better UX, but may need to be added back in for accessibility reasons.-->
 			<h1 class="contactListHeader">Your Contacts</h1> <!-- WE CAN TRY TO PERSONALIZE THIS LATER, WITH THE USERS NAME NEXT TO "CONTACT" (E.G John's Contacts)-->
-			<hr>
 			<span id="contactSearchResult" aria-live="polite"></span>
 			<div id="contactList"></div>
 
@@ -102,6 +114,9 @@
 						<div class="formButtonRow">
 							<button type="button" id="updateContactButton" onclick="updateContact();">Update Contact</button>
 							<button type="button" id="cancelEditContactButton" onclick="cancelEditContact();">Cancel</button>
+							<button type="button" id="deleteContactButton" onclick="showDeleteContactMessage();">
+								<span class="material-symbols-outlined">delete</span>
+							</button>
 						</div>
 
 						<span id="editContactResult" aria-live="polite"></span>
