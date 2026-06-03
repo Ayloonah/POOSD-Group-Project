@@ -2,7 +2,7 @@
 
 // This is for testing the contact dashboard without needing the API.
 // Set this to false when the team wants to test with the real database.
-let USE_MOCK_CONTACTS = true;
+let USE_MOCK_CONTACTS = false;
 
 const urlBase = 'http://www.coppoosd.com/LAMPAPI';
 const extension = 'php';
