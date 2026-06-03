@@ -1,10 +1,8 @@
 /* To be modified, this is the sample js code */
 
-// This function is for testing purposes, it loads fake contacts without using the API. It can be used to test the dashboard 
-// UI before the API is implemented.
-//-----------------------------------------------------------------------------------------------------------------------------
-let USE_MOCK_CONTACTS = true; // Set to false to load real contacts from the API instead of mock contacts for testing purposes.
-//-----------------------------------------------------------------------------------------------------------------------------
+// This is for testing the contact dashboard without needing the API.
+// Set this to false when the team wants to test with the real database.
+let USE_MOCK_CONTACTS = true;
 
 const urlBase = 'http://www.coppoosd.com/LAMPAPI';
 const extension = 'php';
@@ -327,10 +325,109 @@ function showEmptyContacts()
 	document.getElementById("emptyContactsMessage").style.display = "block";
 	document.getElementById("addContactForm").style.display = "none";
 	document.getElementById("editContactForm").style.display = "none";
+	document.getElementById("deleteContactForm").style.display = "none";
 	document.getElementById("contactCardDetails").style.display = "none";
 	document.getElementById("contactCardDetails").innerHTML = "";
 	document.getElementById("contactList").innerHTML = "";
 	document.getElementById("contactSearchResult").innerHTML = "";
+}
+
+function loadContacts()
+{
+	document.getElementById("contactList").innerHTML = "";
+
+	if( USE_MOCK_CONTACTS )
+	{
+		loadMockContacts();
+		return;
+	}
+
+	if( userId < 1 )
+	{
+		showDashboardMessage("Log in to load your contacts.");
+		return;
+	}
+
+	let tmp = {
+		userID: userId
+	};
+
+	let jsonPayload = JSON.stringify( tmp );
+	let url = urlBase + '/Read.' + extension;
+
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.timeout = 10000;
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+	xhr.onreadystatechange = function()
+	{
+		if( this.readyState != 4 )
+		{
+			return;
+		}
+
+		if( this.status != 200 )
+		{
+			showDashboardMessage("The server returned an error while loading contacts.");
+			return;
+		}
+
+		let jsonObject;
+
+		try
+		{
+			jsonObject = JSON.parse( xhr.responseText );
+		}
+		catch(err)
+		{
+			showDashboardMessage("The contacts response was not valid.");
+			return;
+		}
+
+		if( jsonObject.error != "" )
+		{
+			document.getElementById("contactList").innerHTML = '<p class="sidebarEmptyMessage">No contacts found.</p>';
+			showDashboardMessage("");
+			return;
+		}
+
+		if( jsonObject.results == undefined )
+		{
+			showDashboardMessage("Contacts response was missing results.");
+			return;
+		}
+
+		showContacts(jsonObject.results);
+
+		if( jsonObject.results.length == 1 )
+		{
+			showDashboardMessage("Showing 1 contact.");
+		}
+		else
+		{
+			showDashboardMessage("Showing " + jsonObject.results.length + " contacts.");
+		}
+	};
+
+	xhr.onerror = function()
+	{
+		showDashboardMessage("Could not reach the server to load contacts.");
+	};
+
+	xhr.ontimeout = function()
+	{
+		showDashboardMessage("The server is taking too long to load contacts.");
+	};
+
+	try
+	{
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		showDashboardMessage(err.message);
+	}
 }
 
 function showDashboardMessage(message)
@@ -338,43 +435,41 @@ function showDashboardMessage(message)
 	document.getElementById("contactSearchResult").innerHTML = message;
 }
 
-/* Function that works in tandem with search.php to search for contacts by name, phone, or email and display the results on the dashboard. 
-   This function is called whenever the user types in the search box or clicks the search button. */
+function searchContactsOnEnter(event)
+{
+	if( event.key == "Enter" )
+	{
+		searchContacts();
+	}
+}
+
 function searchContacts()
 {
 	let searchText = document.getElementById("contactSearchText").value.trim();
-	document.getElementById("contactSearchResult").innerHTML = "";
-	
-	if (searchText == "")
+
+	if( searchText == "" )
 	{
-		showDashboardMessage("Please enter a name, phone, or email to search.");
+		loadContacts();
 		return;
 	}
 
-
-	// THIS SECTION IS JUST FOR TESTING PURPOSES, USES MOCK CONTACTS INSTEAD OF MAKING AN API CALL.
-	//---------------------------------------------------------------------------------------------
-	if (USE_MOCK_CONTACTS)
-	{
-		let filteredContacts = mockContacts.filter(contact =>
-			contact.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-			contact.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
-			contact.phone.includes(searchText) ||
-			contact.email.toLowerCase().includes(searchText.toLowerCase())
-		);
-		renderContactsWithDividers(filteredContacts);
-		showDashboardMessage("Showing results for '" + searchText + "'.");
-		return;
-	}
-
+	if( USE_MOCK_CONTACTS )
 	{
 		searchMockContacts(searchText);
 		return;
 	}
-	//---------------------------------------------------------------------------------------------
 
+	if( userId < 1 )
+	{
+		showDashboardMessage("Log in to search contacts.");
+		return;
+	}
 
-	let tmp = {search: searchText, userID: userId};
+	let tmp = {
+		userID: userId,
+		search: searchText
+	};
+
 	let jsonPayload = JSON.stringify( tmp );
 	let url = urlBase + '/Search.' + extension;
 
@@ -382,36 +477,138 @@ function searchContacts()
 	xhr.open("POST", url, true);
 	xhr.timeout = 10000;
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try 
+
+	document.getElementById("searchContactButton").disabled = true;
+	document.getElementById("clearSearchButton").disabled = true;
+	showDashboardMessage("Searching...");
+
+	xhr.onreadystatechange = function()
 	{
-		xhr.onreadystatechange = function() 
+		if( this.readyState != 4 )
 		{
-			if( this.readyState == 4 &&this.status == 200)
-			{
-				document.getElementById("contactSearchResult").innerHTML = "Results for '" + searchText + "':";
+			return;
+		}
 
-				let jsonObject = JSON.parse( xhr.responseText );
+		document.getElementById("searchContactButton").disabled = false;
+		document.getElementById("clearSearchButton").disabled = false;
 
-				for (let i = 0; i < jsonObject.results.length; i++)
-				{
-						searchText += jsonObject.results[i].firstName + " " + jsonObject.results[i].lastName + " - " + jsonObject.results[i].phone + " - " + jsonObject.results[i].email;
-						
-						if (i < jsonObject.results.length - 1)
-						{
-							searchText += "<br /> \r\n";
-						}
-					}
-					document.getElementById("contactSearchResult").innerHTML = searchText;
-			}
-		};
+		if( this.status != 200 )
+		{
+			showDashboardMessage("The server returned an error while searching.");
+			return;
+		}
+
+		let jsonObject;
+
+		try
+		{
+			jsonObject = JSON.parse( xhr.responseText );
+		}
+		catch(err)
+		{
+			showDashboardMessage("The search response was not valid.");
+			return;
+		}
+
+		if( jsonObject.error != "" )
+		{
+			document.getElementById("contactList").innerHTML = '<p class="sidebarEmptyMessage">No matches found.</p>';
+			showDashboardMessage(jsonObject.error);
+			return;
+		}
+
+		if( jsonObject.results == undefined )
+		{
+			showDashboardMessage("Search response was missing results.");
+			return;
+		}
+
+		showContacts(jsonObject.results);
+
+		if( jsonObject.results.length == 1 )
+		{
+			showDashboardMessage("Found 1 contact for \"" + searchText + "\".");
+		}
+		else
+		{
+			showDashboardMessage("Found " + jsonObject.results.length + " contacts for \"" + searchText + "\".");
+		}
+	};
+
+	xhr.onerror = function()
+	{
+		document.getElementById("searchContactButton").disabled = false;
+		document.getElementById("clearSearchButton").disabled = false;
+		showDashboardMessage("Could not reach the server to search contacts.");
+	};
+
+	xhr.ontimeout = function()
+	{
+		document.getElementById("searchContactButton").disabled = false;
+		document.getElementById("clearSearchButton").disabled = false;
+		showDashboardMessage("The server is taking too long to search contacts.");
+	};
+
+	try
+	{
 		xhr.send(jsonPayload);
 	}
 	catch(err)
 	{
-		document.getElementById("contactSearchResult").innerHTML = "An error occurred while searching. Please try again.";
+		document.getElementById("searchContactButton").disabled = false;
+		document.getElementById("clearSearchButton").disabled = false;
+		showDashboardMessage(err.message);
+	}
+}
+
+function clearSearch()
+{
+	document.getElementById("contactSearchText").value = "";
+	showDashboardMessage("");
+	loadContacts();
+}
+
+function showContacts(contacts)
+{
+	document.getElementById("contactList").innerHTML = "";
+
+	if( contacts.length == 0 )
+	{
+		document.getElementById("contactList").innerHTML = '<p class="sidebarEmptyMessage">No contacts found.</p>';
+		return;
 	}
 
-	showDashboardMessage("Search API will show matching contacts here.");
+	for( let i = 0; i < contacts.length; i++ )
+	{
+		let contactID = contacts[i].ID;
+		let contactFirstName = contacts[i].FirstName;
+		let contactLastName = contacts[i].LastName;
+		let contactPhone = contacts[i].Phone;
+		let contactEmail = contacts[i].Email;
+
+		if( contactID == undefined )
+		{
+			contactID = contacts[i].id;
+		}
+		if( contactFirstName == undefined )
+		{
+			contactFirstName = contacts[i].firstName;
+		}
+		if( contactLastName == undefined )
+		{
+			contactLastName = contacts[i].lastName;
+		}
+		if( contactPhone == undefined )
+		{
+			contactPhone = contacts[i].phone;
+		}
+		if( contactEmail == undefined )
+		{
+			contactEmail = contacts[i].email;
+		}
+
+		addContactToList(contactFirstName, contactLastName, contactPhone, contactEmail, contactID);
+	}
 }
 
 function showAddContactMessage()
@@ -419,6 +616,7 @@ function showAddContactMessage()
 	document.getElementById("emptyContactsMessage").style.display = "none";
 	document.getElementById("contactCardDetails").style.display = "none";
 	document.getElementById("editContactForm").style.display = "none";
+	document.getElementById("deleteContactForm").style.display = "none";
 	document.getElementById("addContactForm").style.display = "block";
 	document.getElementById("addContactResult").innerHTML = "";
 	showDashboardMessage("Fill out the form to add a new contact.");
@@ -433,6 +631,7 @@ function cancelAddContact()
 	document.getElementById("addContactResult").innerHTML = "";
 	document.getElementById("addContactForm").style.display = "none";
 	document.getElementById("editContactForm").style.display = "none";
+	document.getElementById("deleteContactForm").style.display = "none";
 	document.getElementById("contactCardDetails").style.display = "none";
 	document.getElementById("emptyContactsMessage").style.display = "block";
 	showDashboardMessage("");
@@ -475,11 +674,12 @@ function selectContact(contactID, firstName, lastName, phone, email)
 	contactDetails += "<p>Phone: " + phone + "</p>";
 	contactDetails += "<p>Email: " + email + "</p>";
 	contactDetails += '<button type="button" id="openEditContactButton" onclick="showEditContactMessage();">Edit Contact</button>';
-	contactDetails += '<button type="button" id="deleteContactButton" onclick="showDeleteContactMessage();">Delete Contact</button>';
+	contactDetails += '<button type="button" id="openDeleteContactButton" onclick="showDeleteContactMessage();"><span class="material-symbols-outlined">delete</span><span class="deleteButtonText">Delete Contact</span></button>';
 
 	document.getElementById("emptyContactsMessage").style.display = "none";
 	document.getElementById("addContactForm").style.display = "none";
 	document.getElementById("editContactForm").style.display = "none";
+	document.getElementById("deleteContactForm").style.display = "none";
 	document.getElementById("contactCardDetails").innerHTML = contactDetails;
 	document.getElementById("contactCardDetails").style.display = "block";
 
@@ -499,6 +699,40 @@ function createContact()
 	{
 		document.getElementById("addContactResult").innerHTML = "Please fill in all contact fields.";
 		document.getElementById("addContactResult").className = "errorMessage";
+		return;
+	}
+
+	if( USE_MOCK_CONTACTS )
+	{
+		let newContactID = 1;
+
+		for( let i = 0; i < mockContacts.length; i++ )
+		{
+			if( mockContacts[i].id >= newContactID )
+			{
+				newContactID = mockContacts[i].id + 1;
+			}
+		}
+
+		let tmpContact = {
+			id: newContactID,
+			firstName: contactFirstName,
+			lastName: contactLastName,
+			phone: contactPhone,
+			email: contactEmail
+		};
+
+		mockContacts.push(tmpContact);
+
+		document.getElementById("addContactResult").innerHTML = "Contact added successfully.";
+		document.getElementById("addContactResult").className = "successMessage";
+
+		document.getElementById("contactFirstName").value = "";
+		document.getElementById("contactLastName").value = "";
+		document.getElementById("contactPhone").value = "";
+		document.getElementById("contactEmail").value = "";
+
+		loadMockContacts();
 		return;
 	}
 
@@ -574,12 +808,13 @@ function createContact()
 
 		document.getElementById("addContactResult").innerHTML = "Contact added successfully.";
 		document.getElementById("addContactResult").className = "successMessage";
-		addContactToList(contactFirstName, contactLastName, contactPhone, contactEmail, 0);
 
 		document.getElementById("contactFirstName").value = "";
 		document.getElementById("contactLastName").value = "";
 		document.getElementById("contactPhone").value = "";
 		document.getElementById("contactEmail").value = "";
+
+		loadContacts();
 	};
 
 	xhr.onerror = function()
@@ -627,6 +862,7 @@ function showEditContactMessage()
 
 	document.getElementById("emptyContactsMessage").style.display = "none";
 	document.getElementById("addContactForm").style.display = "none";
+	document.getElementById("deleteContactForm").style.display = "none";
 	document.getElementById("contactCardDetails").style.display = "none";
 	document.getElementById("editContactForm").style.display = "block";
 
@@ -673,6 +909,37 @@ function updateContact()
 	{
 		document.getElementById("editContactResult").innerHTML = "No saved contact is selected.";
 		document.getElementById("editContactResult").className = "errorMessage";
+		return;
+	}
+
+	if( USE_MOCK_CONTACTS )
+	{
+		for( let i = 0; i < mockContacts.length; i++ )
+		{
+			if( mockContacts[i].id == selectedContactID )
+			{
+				mockContacts[i].firstName = editFirstName;
+				mockContacts[i].lastName = editLastName;
+				mockContacts[i].phone = editPhone;
+				mockContacts[i].email = editEmail;
+			}
+		}
+
+		selectedContactFirstName = editFirstName;
+		selectedContactLastName = editLastName;
+		selectedContactPhone = editPhone;
+		selectedContactEmail = editEmail;
+
+		document.getElementById("editContactResult").innerHTML = "Contact updated successfully.";
+		document.getElementById("editContactResult").className = "successMessage";
+
+		loadMockContacts();
+
+		setTimeout(function()
+		{
+			selectContact(selectedContactID, selectedContactFirstName, selectedContactLastName, selectedContactPhone, selectedContactEmail);
+		}, 800);
+
 		return;
 	}
 
@@ -789,70 +1056,288 @@ function updateContact()
 
 function showDeleteContactMessage()
 {
-	showDashboardMessage("Select a contact first, then confirm delete here.");
+	if( selectedContactFirstName == "" )
+	{
+		showDashboardMessage("Select a contact first, then confirm delete here.");
+		return;
+	}
+
+	if( selectedContactID < 1 )
+	{
+		showDashboardMessage("This contact must be loaded from the server before it can be deleted.");
+		return;
+	}
+
+	document.getElementById("emptyContactsMessage").style.display = "none";
+	document.getElementById("addContactForm").style.display = "none";
+	document.getElementById("editContactForm").style.display = "none";
+	document.getElementById("contactCardDetails").style.display = "none";
+	document.getElementById("deleteContactForm").style.display = "flex";
+
+	document.getElementById("deleteContactText").innerHTML = "Are you sure you want to delete " + selectedContactFirstName + " " + selectedContactLastName + "?";
+	document.getElementById("deleteContactResult").innerHTML = "";
+	showDashboardMessage("Confirm delete or cancel.");
 }
 
-/* Creates dividers between contact groups (CURRENTLY ORDERED BY LAST NAME) */
+function cancelDeleteContact()
+{
+	document.getElementById("deleteContactForm").style.display = "none";
+	document.getElementById("deleteContactResult").innerHTML = "";
+
+	if( selectedContactFirstName == "" )
+	{
+		document.getElementById("emptyContactsMessage").style.display = "block";
+	}
+	else
+	{
+		selectContact(selectedContactID, selectedContactFirstName, selectedContactLastName, selectedContactPhone, selectedContactEmail);
+	}
+}
+
+function deleteContact()
+{
+	document.getElementById("deleteContactResult").innerHTML = "";
+
+	if( selectedContactID < 1 )
+	{
+		document.getElementById("deleteContactResult").innerHTML = "No saved contact is selected.";
+		document.getElementById("deleteContactResult").className = "errorMessage";
+		return;
+	}
+
+	if( USE_MOCK_CONTACTS )
+	{
+		let newMockContacts = [];
+
+		for( let i = 0; i < mockContacts.length; i++ )
+		{
+			if( mockContacts[i].id != selectedContactID )
+			{
+				newMockContacts.push(mockContacts[i]);
+			}
+		}
+
+		mockContacts = newMockContacts;
+
+		document.getElementById("deleteContactResult").innerHTML = "Contact deleted successfully.";
+		document.getElementById("deleteContactResult").className = "successMessage";
+
+		selectedContactID = 0;
+		selectedContactFirstName = "";
+		selectedContactLastName = "";
+		selectedContactPhone = "";
+		selectedContactEmail = "";
+		selectedContactButton = null;
+
+		setTimeout(function()
+		{
+			document.getElementById("deleteContactForm").style.display = "none";
+			document.getElementById("contactCardDetails").style.display = "none";
+			document.getElementById("emptyContactsMessage").style.display = "block";
+			showDashboardMessage("Contact deleted.");
+			loadMockContacts();
+		}, 800);
+
+		return;
+	}
+
+	let tmp = {
+		contactID: selectedContactID
+	};
+
+	let jsonPayload = JSON.stringify( tmp );
+	let url = urlBase + '/Delete.' + extension;
+
+	document.getElementById("confirmDeleteContactButton").disabled = true;
+	document.getElementById("confirmDeleteContactButton").innerHTML = "Deleting...";
+
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.timeout = 10000;
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+	xhr.onreadystatechange = function()
+	{
+		if( this.readyState != 4 )
+		{
+			return;
+		}
+
+		document.getElementById("confirmDeleteContactButton").disabled = false;
+		document.getElementById("confirmDeleteContactButton").innerHTML = "Delete Contact";
+
+		if( this.status != 200 )
+		{
+			document.getElementById("deleteContactResult").innerHTML = "The server returned an error. Please try again.";
+			document.getElementById("deleteContactResult").className = "errorMessage";
+			return;
+		}
+
+		let jsonObject;
+
+		try
+		{
+			jsonObject = JSON.parse( xhr.responseText );
+		}
+		catch(err)
+		{
+			document.getElementById("deleteContactResult").innerHTML = "The server response was not valid. Please try again.";
+			document.getElementById("deleteContactResult").className = "errorMessage";
+			return;
+		}
+
+		if( jsonObject.error == undefined )
+		{
+			document.getElementById("deleteContactResult").innerHTML = "Delete response was missing required data.";
+			document.getElementById("deleteContactResult").className = "errorMessage";
+			return;
+		}
+
+		if( jsonObject.error != "" )
+		{
+			document.getElementById("deleteContactResult").innerHTML = jsonObject.error;
+			document.getElementById("deleteContactResult").className = "errorMessage";
+			return;
+		}
+
+		document.getElementById("deleteContactResult").innerHTML = "Contact deleted successfully.";
+		document.getElementById("deleteContactResult").className = "successMessage";
+
+		selectedContactID = 0;
+		selectedContactFirstName = "";
+		selectedContactLastName = "";
+		selectedContactPhone = "";
+		selectedContactEmail = "";
+		selectedContactButton = null;
+
+		setTimeout(function()
+		{
+			document.getElementById("deleteContactForm").style.display = "none";
+			document.getElementById("contactCardDetails").style.display = "none";
+			document.getElementById("emptyContactsMessage").style.display = "block";
+			showDashboardMessage("Contact deleted.");
+			loadContacts();
+		}, 800);
+	};
+
+	xhr.onerror = function()
+	{
+		document.getElementById("confirmDeleteContactButton").disabled = false;
+		document.getElementById("confirmDeleteContactButton").innerHTML = "Delete Contact";
+		document.getElementById("deleteContactResult").innerHTML = "Could not reach the server. Please check your connection.";
+		document.getElementById("deleteContactResult").className = "errorMessage";
+	};
+
+	xhr.ontimeout = function()
+	{
+		document.getElementById("confirmDeleteContactButton").disabled = false;
+		document.getElementById("confirmDeleteContactButton").innerHTML = "Delete Contact";
+		document.getElementById("deleteContactResult").innerHTML = "The server is taking too long to respond. Please try again.";
+		document.getElementById("deleteContactResult").className = "errorMessage";
+	};
+
+	try
+	{
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		document.getElementById("confirmDeleteContactButton").disabled = false;
+		document.getElementById("confirmDeleteContactButton").innerHTML = "Delete Contact";
+		document.getElementById("deleteContactResult").innerHTML = err.message;
+		document.getElementById("deleteContactResult").className = "errorMessage";
+	}
+}
+
+function searchMockContacts(searchText)
+{
+	let filteredContacts = [];
+	let lowerSearchText = searchText.toLowerCase();
+
+	for( let i = 0; i < mockContacts.length; i++ )
+	{
+		if( mockContacts[i].firstName.toLowerCase().includes(lowerSearchText) ||
+			mockContacts[i].lastName.toLowerCase().includes(lowerSearchText) ||
+			mockContacts[i].phone.includes(searchText) ||
+			mockContacts[i].email.toLowerCase().includes(lowerSearchText) )
+		{
+			filteredContacts.push(mockContacts[i]);
+		}
+	}
+
+	renderContactsWithDividers(filteredContacts);
+
+	if( filteredContacts.length == 1 )
+	{
+		showDashboardMessage("Showing 1 test result for \"" + searchText + "\".");
+	}
+	else
+	{
+		showDashboardMessage("Showing " + filteredContacts.length + " test results for \"" + searchText + "\".");
+	}
+}
+
 function renderContactsWithDividers(contacts)
 {
-    let contactList = document.getElementById("contactList");
-    contactList.innerHTML = "";
+	let contactList = document.getElementById("contactList");
+	contactList.innerHTML = "";
 
-    // Sort first
-    contacts.sort((a, b) => {
-        return (a.lastName + a.firstName)
-            .toLowerCase()
-            .localeCompare((b.lastName + b.firstName).toLowerCase());
-    });
+	if( contacts.length == 0 )
+	{
+		contactList.innerHTML = '<p class="sidebarEmptyMessage">No contacts found.</p>';
+		return;
+	}
 
-    let currentLetter = "";
+	contacts.sort(function(a, b)
+	{
+		let firstName = (a.lastName + a.firstName).toLowerCase();
+		let secondName = (b.lastName + b.firstName).toLowerCase();
+		return firstName.localeCompare(secondName);
+	});
 
-    for (let c of contacts)
-    {
-        let fullName = (c.lastName + c.firstName);
-        let firstLetter = c.lastName.charAt(0).toUpperCase();
+	let currentLetter = "";
 
-        // Insert divider when letter changes
-        if (firstLetter !== currentLetter)
-        {
-            currentLetter = firstLetter;
+	for( let i = 0; i < contacts.length; i++ )
+	{
+		let firstLetter = contacts[i].lastName.charAt(0).toUpperCase();
 
-            let divider = document.createElement("div");
-            divider.className = "contactDivider";
-            divider.innerText = currentLetter;
+		if( firstLetter != currentLetter )
+		{
+			currentLetter = firstLetter;
 
-            contactList.appendChild(divider);
-        }
+			let divider = document.createElement("div");
+			divider.className = "contactDivider";
+			divider.innerHTML = currentLetter;
+			contactList.appendChild(divider);
+		}
 
-        addContactToList(
-            c.firstName,
-            c.lastName,
-            c.phone,
-            c.email,
-            c.id
-        );
-    }
+		addContactToList(
+			contacts[i].firstName,
+			contacts[i].lastName,
+			contacts[i].phone,
+			contacts[i].email,
+			contacts[i].id
+		);
+	}
 }
-
-// This function is for testing purposes, it loads fake contacts without using the API. It can be used to test the dashboard 
-// UI before the API is implemented.
-//--------------------------------------------------------------------------------------------------------------------
-
-let mockContacts = [{ id: 1, firstName: "John", lastName: "Doe", phone: "111-111-1111", email: "john@test.com" },
-        { id: 2, firstName: "Jane", lastName: "Smith", phone: "222-222-2222", email: "jane@test.com" },
-        { id: 3, firstName: "Mike", lastName: "Brown", phone: "333-333-3333", email: "mike@test.com" },
-		{ id: 4, firstName: "Ben", lastName: "Affleck", phone: "444-444-4444", email: "benrunsonduncan@test.com" },
-		{ id: 5, firstName: "Matt", lastName: "Damon", phone: "555-555-5555", email: "mattheartsteacher@test.com" },
-		{ id: 6, firstName: "Carol", lastName: "Shelby", phone: "666-666-6666", email: "sevenlitersornuthin@test.com" },
-		{ id: 7, firstName: "Ken", lastName: "Miles", phone: "777-777-7777", email: "learntodrivepillock@test.com" },
-		{ id: 8, firstName: "Christian", lastName: "Bale", phone: "888-888-8888", email: "bestbatman@test.com" },
-		{ id: 9, firstName: "Ronald", lastName: "MacDonald", phone: "999-999-9999", email: "burgersaregoodforyou@test.com"},
-		{ id: 10, firstName: "SpongeBob", lastName: "SquarePants", phone: "123-456-7890", email: "spongebob@test.com" },
-		{ id: 11, firstName: "Chief", lastName: "Keef", phone: "300-300-3000", email: "sosabackfromthedead@test.com" }
-	];
 
 function loadMockContacts()
 {
 	renderContactsWithDividers(mockContacts);
+	showDashboardMessage("Showing " + mockContacts.length + " test contacts.");
 }
-//--------------------------------------------------------------------------------------------------------------------
+
+// This list is only for testing the contact page UI before using the API.
+let mockContacts = [
+	{ id: 1, firstName: "John", lastName: "Doe", phone: "111-111-1111", email: "john@test.com" },
+	{ id: 2, firstName: "Jane", lastName: "Smith", phone: "222-222-2222", email: "jane@test.com" },
+	{ id: 3, firstName: "Mike", lastName: "Brown", phone: "333-333-3333", email: "mike@test.com" },
+	{ id: 4, firstName: "Ben", lastName: "Affleck", phone: "444-444-4444", email: "benrunsonduncan@test.com" },
+	{ id: 5, firstName: "Matt", lastName: "Damon", phone: "555-555-5555", email: "mattheartsteacher@test.com" },
+	{ id: 6, firstName: "Carol", lastName: "Shelby", phone: "666-666-6666", email: "sevenlitersornuthin@test.com" },
+	{ id: 7, firstName: "Ken", lastName: "Miles", phone: "777-777-7777", email: "learntodrivepillock@test.com" },
+	{ id: 8, firstName: "Christian", lastName: "Bale", phone: "888-888-8888", email: "bestbatman@test.com" },
+	{ id: 9, firstName: "Ronald", lastName: "MacDonald", phone: "999-999-9999", email: "burgersaregoodforyou@test.com" },
+	{ id: 10, firstName: "SpongeBob", lastName: "SquarePants", phone: "123-456-7890", email: "spongebob@test.com" },
+	{ id: 11, firstName: "Chief", lastName: "Keef", phone: "300-300-3000", email: "sosabackfromthedead@test.com" }
+];

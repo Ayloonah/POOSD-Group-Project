@@ -246,29 +246,6 @@ body {
     background-color: #2d5c85;
 }
 
-/* START: Style for the edit contact button on contact page (contact.html) */
-#deleteContactButton {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: none;
-    border: none;
-    padding: 6px;
-    cursor: pointer;
-}
-
-#deleteContactButton .material-symbols-outlined {
-    color: #8a1f11;
-    font-size: 30px;
-}
-
-#deleteContactButton:hover .material-symbols-outlined {
-    color: #a71f11;
-    transform: scale(1.1);
-    transition: transform 0.2s ease;
-}
-/* END: Style for the edit contact button on contact page (contact.html) */
-
 #logoutButton {
     width: 100px;
 }
@@ -285,7 +262,13 @@ body {
 
 .searchRow {
     display: flex;
+    align-items: center;
     gap: 10px;
+}
+
+.searchLabel {
+    position: absolute;
+    left: -10000px;
 }
 
 .topBanner input[id="contactSearchText"] {
@@ -326,9 +309,34 @@ body {
     
 }
 
+#searchContactButton:disabled {
+    color: #8aa8c2;
+    cursor: wait;
+}
+
+#clearSearchButton {
+    min-height: 28px;
+    border: 0;
+    border-radius: 6px;
+    background-color: #476B8A;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: "Lustria", serif;
+    font-size: 13px;
+}
+
+#clearSearchButton:hover {
+    background-color: #34536d;
+}
+
+#clearSearchButton:disabled {
+    background-color: #8aa8c2;
+    cursor: wait;
+}
+
 #contactSearchResult {
     display: block;
-    /*min-height: 24px;*/
+    min-height: 24px;
     margin-top: 12px;
     color: #4f5d67;
 }
@@ -458,7 +466,10 @@ body {
 #cancelContactButton,
 #updateContactButton,
 #cancelEditContactButton,
-#openEditContactButton {
+#openEditContactButton,
+#openDeleteContactButton,
+#confirmDeleteContactButton,
+#cancelDeleteContactButton {
     flex: 1;
     min-height: 36px;
     border: 0;
@@ -477,7 +488,8 @@ body {
 }
 
 #cancelContactButton,
-#cancelEditContactButton {
+#cancelEditContactButton,
+#cancelDeleteContactButton {
     background-color: #476B8A;
 }
 
@@ -487,8 +499,62 @@ body {
     background-color: #3E77A9;
 }
 
+#openDeleteContactButton {
+    width: 100%;
+    margin-top: 12px;
+    background-color: #8a1f11;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+#confirmDeleteContactButton {
+    background-color: #8a1f11;
+}
+
+#openDeleteContactButton .material-symbols-outlined {
+    font-size: 20px;
+}
+
+#deleteContactForm {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: rgba(25, 47, 67, 0.55);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.deleteDialogBox {
+    width: min(420px, 100%);
+    padding: 26px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
+}
+
+.deleteDialogBox h2 {
+    margin-top: 0;
+    color: #192F43;
+    text-align: center;
+}
+
+#deleteContactText {
+    color: #192F43;
+    text-align: center;
+}
+
 #addContactResult,
-#editContactResult {
+#editContactResult,
+#deleteContactResult {
     display: block;
     min-height: 22px;
     margin-top: 12px;
@@ -509,6 +575,12 @@ body {
 
 .contactListButton:hover {
     background-color: #d9e4ed;
+}
+
+.sidebarEmptyMessage {
+    color: #4f5d67;
+    font-size: 13px;
+    text-align: center;
 }
 
 #contactCardDetails {
