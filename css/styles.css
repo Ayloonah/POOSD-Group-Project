@@ -662,6 +662,14 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+.loginForm label {
+    display: block;
+    margin-top: 14px;
+    text-align: left;
+    width: 200px;
+}
+
 /* Style for "Sign in" title on login page (index.html)*/
 .formTitle { 
     font-size: 32px;
@@ -711,20 +719,21 @@ input[type="button"], #loginButton:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    
-
-    h1 {
-        font-size: 32px;
-        margin-bottom: 10px;
-        transform: translateX(-75px);
-    }
-    p {
-        font-size: 11px;
-        opacity: 0.90;
-        margin-bottom: 20px;
-        line-height: 2.0;
-        transform: translateX(-3px);
-    }
 }
+
+.welcomeMessage h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    transform: translateX(-75px);
+}
+.welcomeMessage p {
+    font-size: 11px;
+    opacity: 0.90;
+    margin-bottom: 20px;
+    line-height: 2.0;
+    transform: translateX(-3px);
+    max-width: 325px;
+}
+
 /*--------------------------------------------------------------------------------------------------------------*/
 /* END of Style for the login page (index.html) */
