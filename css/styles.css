@@ -1,3 +1,9 @@
+/* READ: This file contains all the style code for the whole site. With that being the case, it is VERY messy.*/
+/* I've tried to find at each point where I can see that the code is only for a specific page (e.g., register.html or contact.html) and added comments to indicate that. */
+/* Each sections comment will have a start comment starting with "START" and an end comment ending with "END". */
+/* If you are trying to find a specific style code for a specific page, I recommend using Ctrl+F (Windows) or Cmd+F (Mac) to find the style for the section you're looking for. */
+
+/* General styles for the body of the whole site. This includes the login page, registration page, and contact dashboard. */
 body {
     font-family: "Lustria", serif;
     background-image: linear-gradient(to bottom, #3E77A9, #192F43 );
@@ -20,7 +26,8 @@ body {
     height: calc(100vh - 60px);
 }
 
-/* Style for the top banner */
+/* START: Style for the top banner. This should stay consistent throughout the whole site*/
+/*------------------------------------------------------------------------------------------*/
 .topBanner{
     background-color: #ffffff;
     opacity: 0.75;
@@ -47,7 +54,12 @@ body {
     text-decoration: none;
     color: inherit;
 }
+/*------------------------------------------------------------------------------------------*/
+/* END: Style for the top banner. */
 
+
+/* START: Style for the registration page (register.html) */
+/*------------------------------------------------------------------------------------------*/
 #registerDiv {
     background-color: #ffffff;
     opacity: 0.97;
@@ -162,7 +174,13 @@ body {
 #backToLoginLink:focus {
     text-decoration: underline;
 }
+/*------------------------------------------------------------------------------------------*/
+/* END: Style for the registration page (register.html) */
 
+
+/* START: Style for the main content area (contact.html). */
+/* READ: This code is very messy, I am NOT 100% sure that this is only code for contact.html*/
+/*------------------------------------------------------------------------------------------*/
 .mainArea {
     flex: 1;
     height: 100%;
@@ -612,6 +630,11 @@ body {
     color: #192F43;
     font-size: 18px;
 }
+
+/* READ: This code is very messy, I am NOT 100% sure that this is only code for contact.html. */
+/*------------------------------------------------------------------------------------------*/
+/* END: Style for the main content area (contact.html). */
+
 
 /* START of Responsive design for mobile devices */
 /*--------------------------------------------------------------------------------------------------------------*/
