@@ -439,13 +439,15 @@ body {
     opacity: 0.75;
     width: 75%;
     height: auto;
-    margin: 50px auto;
+    margin: auto;
+    padding: 40px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 
 #addContactForm,
 #editContactForm {
@@ -698,8 +700,6 @@ body {
 .formTitle { 
     font-size: 32px;
     opacity: 0.90;
-    align-self: flex-start;
-    margin-left: 75px;
 }
 
 /* Style for the input fields (Username and Password Boxes) on login page (index.html)*/
