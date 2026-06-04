@@ -22,7 +22,7 @@ body {
 /* Style for the top banner */
 .topBanner{
     background-color: #ffffff;
-    opacity: 0.80;
+    opacity: 0.75;
     width: 100%;
     height: 60px;
 
@@ -186,7 +186,7 @@ body {
     width: 225px;
     height: 100vh;
     background-color: #ffffff;
-    opacity: 0.80;
+    opacity: 0.75;
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
@@ -421,7 +421,7 @@ body {
 .contactCard {
     position: relative;
     background-color: #ffffff;
-    opacity: 0.80;
+    opacity: 0.75;
     width: 80%;
     height: 75%;
     margin: 50px auto;
@@ -646,7 +646,7 @@ body {
 /* Style for the center white box on login page (index.html)*/
 .centerBoxLogin {
     background-color: #ffffff;
-    opacity: 0.85;
+    opacity: 0.75;
     width: 75%;
     height: 75%;
     margin: 50px auto;
@@ -660,6 +660,7 @@ body {
 /* Ensure the left and right sections of the center box take equal space on login page (index.html) */
 .centerBoxLogin div {
     flex: 1;
+    min-width: 0;
 }
 
 /* Login form style (Left side of Center Box) on login page (index.html)*/
@@ -668,6 +669,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
 }
 
 .loginForm label {
