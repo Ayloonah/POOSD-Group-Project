@@ -720,13 +720,13 @@ input[type="button"], #loginButton:hover {
     justify-content: center;
 }
 
-.welcomeMessage h1 {
-    font-size: 32px;
+.welcomeMessage h2 {
+    font-size: 24px;
     margin-bottom: 10px;
-    transform: translateX(-75px);
+    transform: translateX(-8px);
 }
 .welcomeMessage p {
-    font-size: 11px;
+    font-size: 14px;
     opacity: 0.90;
     margin-bottom: 20px;
     line-height: 2.0;
