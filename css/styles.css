@@ -42,6 +42,11 @@ body {
     transform: translateY(3px);
 }
 
+.topBanner h1 a {
+    text-decoration: none;
+    color: inherit;
+}
+
 #registerDiv {
     background-color: #ffffff;
     opacity: 0.97;
@@ -414,8 +419,8 @@ body {
     position: relative;
     background-color: #ffffff;
     opacity: 0.80;
-    width: 600px;
-    height: 450px;
+    width: 80%;
+    height: 75%;
     margin: 50px auto;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -639,8 +644,8 @@ body {
 .centerBoxLogin {
     background-color: #ffffff;
     opacity: 0.85;
-    width: 750px;
-    height: 450px;
+    width: 75%;
+    height: 75%;
     margin: 50px auto;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -733,6 +738,5 @@ input[type="button"], #loginButton:hover {
     transform: translateX(-3px);
     max-width: 325px;
 }
-
 /*--------------------------------------------------------------------------------------------------------------*/
 /* END of Style for the login page (index.html) */

@@ -17,7 +17,7 @@
 <body>
     <!-- Top banner for the application -->
     <div class="topBanner"> 
-        <h1>Contact Book</h1>
+        <h1><a href="index.html">Contact Book</a></h1>
     </div>
 
     <!-- Center box for the Login page. The left side has the login form, the right side has our welcome message -->
@@ -29,17 +29,17 @@
             <p class="formTitle"> Sign In </p>
             <form onsubmit="return false;">
                 <label for="loginName">User Name</label>
-                <input type="text" id="loginName" name="loginName" placeholder="USERNAME" autocomplete="username"><br>
+                <input type="text" id="loginName" name="loginName" placeholder="Username" autocomplete="username"><br>
 
                 <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" name="loginPassword" placeholder="PASSWORD" autocomplete="current-password"><br><br>
+                <input type="password" id="loginPassword" name="loginPassword" placeholder="Password" autocomplete="current-password"><br><br>
 
                 <button type="button" id="loginButton" onclick="doLogin();">Login</button>
             </form>
             <span id="loginResult" aria-live="polite"></span>
 
             <!-- THIS IS NOT REVIEWED WILL NEED TO BE UPDATED -->
-            <p class="UseOurSite"> Don't have an account? <a href="register.html">Register here</a></p>
+            <p class="UseOurSite"> Don't have an account? <a href="register.html">Register here!</a></p>
         </div>
 
         <div class="welcomeMessage">
