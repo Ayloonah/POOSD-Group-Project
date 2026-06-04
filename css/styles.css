@@ -3,6 +3,7 @@ body {
     background-image: linear-gradient(to bottom, #3E77A9, #192F43 );
     margin: 0;
     padding: 0;
+    min-height: 100vh;
 }
 
 .registerPage {
@@ -16,7 +17,7 @@ body {
 .contactLayout {
     display: flex;
     flex-direction: row;
-    min-height: 100vh;
+    height: calc(100vh - 60px);
 }
 
 /* Style for the top banner */
@@ -164,6 +165,8 @@ body {
 
 .mainArea {
     flex: 1;
+    height: 100%;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
@@ -184,12 +187,12 @@ body {
 /* Style for left sidebar with Contact list of names in center and add contact button at the bottom */
 .dashboardShell {
     width: 225px;
-    height: 100vh;
+    height: 100%;
     background-color: #ffffff;
     opacity: 0.75;
     padding: 20px;
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
     /*margin: 36px auto;
@@ -387,6 +390,18 @@ body {
 #contactList {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    margin: 12px;
+}
+
+#addContactButton-container {
+    margin-top:auto;
+    padding-top: 12px;
+    background-color: #ffffff;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 /* This style code handles the divider between contact groups (CURRENTLY ORDERED BY LAST NAME) */
 /* e.g., "A" for all contacts starting with "A" */
@@ -422,8 +437,8 @@ body {
     position: relative;
     background-color: #ffffff;
     opacity: 0.75;
-    width: 80%;
-    height: 75%;
+    width: 75%;
+    height: auto;
     margin: 50px auto;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
