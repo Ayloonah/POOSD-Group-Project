@@ -168,14 +168,17 @@ body {
     flex-direction: column;
 }
 
-.leftTools {
-    justify-self: start;    
+.leftTools {   
     display: flex;
     gap: 8px;
+    margin-right: auto;
 }
 
 .rightTools {
-    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
 }
 
 /* Style for left sidebar with Contact list of names in center and add contact button at the bottom */
