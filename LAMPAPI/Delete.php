@@ -7,13 +7,34 @@
     else
 	{
         $inData = getRequestInfo();
+		if (!$inData) 
+		{
+    	returnWithError("Invalid JSON input");
+    	exit();
+		}
+
+		if (!isset($inData["contactID"])) 
+		{
+   		 	returnWithError("Missing contactID");
+    		exit();
+		}
         $contactID = $inData["contactID"];
 		$stmt = $conn->prepare("DELETE from Contacts where ID=?");
+		if (!$stmt)
+		{
+    		returnWithError("Statement prepare failed: " . $conn->error);
+    		exit();
+		}
 		$stmt->bind_param("i", $contactID);
 		$stmt->execute();
+		if (!$stmt->execute()) 
+		{
+    		returnWithError("Execute failed: " . $stmt->error);
+    		exit();
+		}
         if ($stmt->affected_rows > 0)
 		{
-    		returnWithError(""); // success
+    		returnWithInfo("Contact Deleted!"); // success
 		}
 		else
 		{
