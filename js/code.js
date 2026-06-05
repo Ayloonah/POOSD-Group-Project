@@ -167,6 +167,74 @@ function setRegisterButtonLoading(isLoading)
 	}
 }
 
+function checkRegisterPasswords()
+{
+	let password = document.getElementById("registerPassword").value;
+	let confirmPassword = document.getElementById("registerConfirmPassword").value;
+
+	if( password == "" && confirmPassword == "" )
+	{
+		setRegisterMessage("", false);
+		return false;
+	}
+
+	if( confirmPassword == "" )
+	{
+		setRegisterMessage("Confirm your password.", false);
+		return false;
+	}
+
+	if( password == confirmPassword )
+	{
+		setRegisterMessage("Passwords match.", true);
+		return true;
+	}
+
+	setRegisterMessage("Passwords do not match.", false);
+	return false;
+}
+
+function isValidEmail(email)
+{
+	let atSign = email.indexOf("@");
+	let dot = email.lastIndexOf(".");
+
+	if( atSign < 1 )
+	{
+		return false;
+	}
+
+	if( dot < atSign + 2 )
+	{
+		return false;
+	}
+
+	if( dot == email.length - 1 )
+	{
+		return false;
+	}
+
+	return true;
+}
+
+function isValidPhone(phone)
+{
+	if( phone.length != 10 )
+	{
+		return false;
+	}
+
+	for( let i = 0; i < phone.length; i++ )
+	{
+		if( phone[i] < "0" || phone[i] > "9" )
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 function doRegister()
 {
 	let firstName = document.getElementById("registerFirstName").value.trim();
@@ -570,13 +638,7 @@ function clearSearch()
 
 function showContacts(contacts)
 {
-	document.getElementById("contactList").innerHTML = "";
-
-	if( contacts.length == 0 )
-	{
-		document.getElementById("contactList").innerHTML = '<p class="sidebarEmptyMessage">No contacts found.</p>';
-		return;
-	}
+	let normalContacts = [];
 
 	for( let i = 0; i < contacts.length; i++ )
 	{
@@ -607,8 +669,39 @@ function showContacts(contacts)
 			contactEmail = contacts[i].email;
 		}
 
-		addContactToList(contactFirstName, contactLastName, contactPhone, contactEmail, contactID);
+		if( contactFirstName == undefined )
+		{
+			contactFirstName = "";
+		}
+		if( contactLastName == undefined )
+		{
+			contactLastName = "";
+		}
+		if( contactPhone == undefined )
+		{
+			contactPhone = "";
+		}
+		if( contactEmail == undefined )
+		{
+			contactEmail = "";
+		}
+		if( contactID == undefined )
+		{
+			contactID = 0;
+		}
+
+		let tmpContact = {
+			id: contactID,
+			firstName: contactFirstName,
+			lastName: contactLastName,
+			phone: contactPhone,
+			email: contactEmail
+		};
+
+		normalContacts.push(tmpContact);
 	}
+
+	renderContactsWithDividers(normalContacts);
 }
 
 function showAddContactMessage()
@@ -698,6 +791,20 @@ function createContact()
 	if( contactFirstName == "" || contactLastName == "" || contactPhone == "" || contactEmail == "" )
 	{
 		document.getElementById("addContactResult").innerHTML = "Please fill in all contact fields.";
+		document.getElementById("addContactResult").className = "errorMessage";
+		return;
+	}
+
+	if( !isValidPhone(contactPhone) )
+	{
+		document.getElementById("addContactResult").innerHTML = "Phone number must be 10 digits.";
+		document.getElementById("addContactResult").className = "errorMessage";
+		return;
+	}
+
+	if( !isValidEmail(contactEmail) )
+	{
+		document.getElementById("addContactResult").innerHTML = "Invalid e-mail address.";
 		document.getElementById("addContactResult").className = "errorMessage";
 		return;
 	}
@@ -905,6 +1012,20 @@ function updateContact()
 		return;
 	}
 
+	if( !isValidPhone(editPhone) )
+	{
+		document.getElementById("editContactResult").innerHTML = "Phone number must be 10 digits.";
+		document.getElementById("editContactResult").className = "errorMessage";
+		return;
+	}
+
+	if( !isValidEmail(editEmail) )
+	{
+		document.getElementById("editContactResult").innerHTML = "Invalid e-mail address.";
+		document.getElementById("editContactResult").className = "errorMessage";
+		return;
+	}
+
 	if( selectedContactID < 1 )
 	{
 		document.getElementById("editContactResult").innerHTML = "No saved contact is selected.";
@@ -938,7 +1059,7 @@ function updateContact()
 		setTimeout(function()
 		{
 			selectContact(selectedContactID, selectedContactFirstName, selectedContactLastName, selectedContactPhone, selectedContactEmail);
-		}, 800);
+		}, 2500);
 
 		return;
 	}
@@ -1022,7 +1143,7 @@ function updateContact()
 		setTimeout(function()
 		{
 			selectContact(selectedContactID, selectedContactFirstName, selectedContactLastName, selectedContactPhone, selectedContactEmail);
-		}, 800);
+		}, 2500);
 	};
 
 	xhr.onerror = function()
@@ -1136,7 +1257,7 @@ function deleteContact()
 			document.getElementById("emptyContactsMessage").style.display = "block";
 			showDashboardMessage("Contact deleted.");
 			loadMockContacts();
-		}, 800);
+		}, 2500);
 
 		return;
 	}
@@ -1217,7 +1338,7 @@ function deleteContact()
 			document.getElementById("emptyContactsMessage").style.display = "block";
 			showDashboardMessage("Contact deleted.");
 			loadContacts();
-		}, 800);
+		}, 2500);
 	};
 
 	xhr.onerror = function()
@@ -1301,6 +1422,11 @@ function renderContactsWithDividers(contacts)
 	{
 		let firstLetter = contacts[i].lastName.charAt(0).toUpperCase();
 
+		if( firstLetter == "" )
+		{
+			firstLetter = "#";
+		}
+
 		if( firstLetter != currentLetter )
 		{
 			currentLetter = firstLetter;
@@ -1329,15 +1455,15 @@ function loadMockContacts()
 
 // This list is only for testing the contact page UI before using the API.
 let mockContacts = [
-	{ id: 1, firstName: "John", lastName: "Doe", phone: "111-111-1111", email: "john@test.com" },
-	{ id: 2, firstName: "Jane", lastName: "Smith", phone: "222-222-2222", email: "jane@test.com" },
-	{ id: 3, firstName: "Mike", lastName: "Brown", phone: "333-333-3333", email: "mike@test.com" },
-	{ id: 4, firstName: "Ben", lastName: "Affleck", phone: "444-444-4444", email: "benrunsonduncan@test.com" },
-	{ id: 5, firstName: "Matt", lastName: "Damon", phone: "555-555-5555", email: "mattheartsteacher@test.com" },
-	{ id: 6, firstName: "Carol", lastName: "Shelby", phone: "666-666-6666", email: "sevenlitersornuthin@test.com" },
-	{ id: 7, firstName: "Ken", lastName: "Miles", phone: "777-777-7777", email: "learntodrivepillock@test.com" },
-	{ id: 8, firstName: "Christian", lastName: "Bale", phone: "888-888-8888", email: "bestbatman@test.com" },
-	{ id: 9, firstName: "Ronald", lastName: "MacDonald", phone: "999-999-9999", email: "burgersaregoodforyou@test.com" },
-	{ id: 10, firstName: "SpongeBob", lastName: "SquarePants", phone: "123-456-7890", email: "spongebob@test.com" },
-	{ id: 11, firstName: "Chief", lastName: "Keef", phone: "300-300-3000", email: "sosabackfromthedead@test.com" }
+	{ id: 1, firstName: "John", lastName: "Doe", phone: "1111111111", email: "john@test.com" },
+	{ id: 2, firstName: "Jane", lastName: "Smith", phone: "2222222222", email: "jane@test.com" },
+	{ id: 3, firstName: "Mike", lastName: "Brown", phone: "3333333333", email: "mike@test.com" },
+	{ id: 4, firstName: "Ben", lastName: "Affleck", phone: "4444444444", email: "benrunsonduncan@test.com" },
+	{ id: 5, firstName: "Matt", lastName: "Damon", phone: "5555555555", email: "mattheartsteacher@test.com" },
+	{ id: 6, firstName: "Carol", lastName: "Shelby", phone: "6666666666", email: "sevenlitersornuthin@test.com" },
+	{ id: 7, firstName: "Ken", lastName: "Miles", phone: "7777777777", email: "learntodrivepillock@test.com" },
+	{ id: 8, firstName: "Christian", lastName: "Bale", phone: "8888888888", email: "bestbatman@test.com" },
+	{ id: 9, firstName: "Ronald", lastName: "MacDonald", phone: "9999999999", email: "burgersaregoodforyou@test.com" },
+	{ id: 10, firstName: "SpongeBob", lastName: "SquarePants", phone: "1234567890", email: "spongebob@test.com" },
+	{ id: 11, firstName: "Chief", lastName: "Keef", phone: "3003003000", email: "sosabackfromthedead@test.com" }
 ];

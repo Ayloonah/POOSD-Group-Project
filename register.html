@@ -30,10 +30,10 @@
 	<input type="text" id="registerLogin" placeholder="Username" autocomplete="username" /><br />
 
 	<label for="registerPassword">Password</label>
-	<input type="password" id="registerPassword" placeholder="Password" autocomplete="new-password" /><br />
+	<input type="password" id="registerPassword" placeholder="Password" autocomplete="new-password" oninput="checkRegisterPasswords();" /><br />
 
 	<label for="registerConfirmPassword">Confirm Password</label>
-	<input type="password" id="registerConfirmPassword" placeholder="Confirm Password" autocomplete="new-password" /><br />
+	<input type="password" id="registerConfirmPassword" placeholder="Confirm Password" autocomplete="new-password" oninput="checkRegisterPasswords();" /><br />
 
 	<button type="button" id="registerButton" class="buttons" onclick="doRegister();"> Create Account </button>
 	<span id="registerResult" aria-live="polite"></span>

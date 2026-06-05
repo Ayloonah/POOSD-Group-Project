@@ -488,7 +488,11 @@ body {
 }
 
 #addContactForm input[type="text"],
-#editContactForm input[type="text"] {
+#addContactForm input[type="tel"],
+#addContactForm input[type="email"],
+#editContactForm input[type="text"],
+#editContactForm input[type="tel"],
+#editContactForm input[type="email"] {
     width: 100%;
     min-height: 34px;
     padding: 8px;
