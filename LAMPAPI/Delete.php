@@ -26,7 +26,7 @@
     		exit();
 		}
 		$stmt->bind_param("i", $contactID);
-		$stmt->execute();
+		//$stmt->execute();
 		if (!$stmt->execute()) 
 		{
     		returnWithError("Execute failed: " . $stmt->error);
