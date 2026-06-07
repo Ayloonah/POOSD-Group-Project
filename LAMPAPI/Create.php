@@ -1,11 +1,6 @@
 <?php
   $conn = new mysqli("localhost", "TheBeast", "WeLoveCOP4331", "COP4331");  
   $inData = getRequestInfo();
-  $firstName = $inData["firstName"];
-  $lastName = $inData["lastName"];
-  $phone = $inData["phone"];
-  $email = $inData["email"];
-  $userID = $inData["userID"];
   function sendResultInfoAsJson( $obj )
 	{
 		header('Content-type: application/json');
@@ -20,17 +15,46 @@
 		$retValue = '{"error":"' . $err . '"}';
 		sendResultInfoAsJson( $retValue );
 	}
+	function returnWithInfo($msg)
+  {
+    $retValue = '{"message":"' . $msg . '","error":""}';
+    sendResultInfoAsJson($retValue);
+  }
     if ($conn->connect_error) 
 	{
 		returnWithError( $conn->connect_error );
+		exit();
 	} 
-    else
+	if(!$inData)
 	{
-		$stmt = $conn->prepare("INSERT into Contacts (FirstName,LastName, Phone, Email, UserId) VALUES(?,?,?,?,?)");
-		$stmt->bind_param("ssssi", $firstName, $lastName, $phone, $email, $userID);
-		$stmt->execute();
+		returnWithError("Invalid JSON input");
+		exit();
+	}
+	
+	if (!isset($inData["firstName"], $inData["lastName"], $inData["phone"], $inData["email"], $inData["userID"]))
+  	{
+    	returnWithError("Missing required field");
+    	exit();
+  	}	
+	 $firstName = $inData["firstName"];
+ 	 $lastName = $inData["lastName"];
+ 	 $phone = $inData["phone"];
+  	 $email = $inData["email"];
+ 	 $userID = $inData["userID"];
+	$stmt = $conn->prepare("INSERT into Contacts (FirstName,LastName, Phone, Email, UserId) VALUES(?,?,?,?,?)");
+	if (!$stmt)
+  	{
+   	 	returnWithError("Statement prepare failed: " . $conn->error);
+    	exit();
+  	}
+	$stmt->bind_param("ssssi", $firstName, $lastName, $phone, $email, $userID);
+	 if (!$stmt->execute())
+  	{
+    	returnWithError("Execute failed: " . $stmt->error);
+    	exit();
+  	}
+  
 		$stmt->close();
 		$conn->close();
-		returnWithError("");
-	}
+		returnWithInfo("Contact Added!");
   ?>
