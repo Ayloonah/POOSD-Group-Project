@@ -3,15 +3,44 @@
   if ($conn->connect_error) 
 	{
 		returnWithError( $conn->connect_error );
+		exit();
 	} 
-	else
-	{
 		 $inData = getRequestInfo();
-         $results = "";
-         $stmt = $conn->prepare("SELECT ID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID=?");
-         $stmt->bind_param("i", $inData["userID"]);
-         $stmt->execute();
+		 if (!$inData)
+  		{
+    		returnWithError("Invalid JSON input");
+   			exit();
+ 		 }
+        if (!isset($inData["userID"]))
+		{
+   		 returnWithError("Missing userID");
+    		exit();
+		}
+
+		$userID = $inData["userID"];
+
+		$stmt = $conn->prepare("SELECT ID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID=?");
+
+		if (!$stmt)
+		{
+    		returnWithError("Statement prepare failed: " . $conn->error);
+    		exit();
+		}
+
+		$stmt->bind_param("i", $userID);
+        if (!$stmt->execute())
+  		{
+    		returnWithError("Execute failed: " . $stmt->error);
+    		exit();
+  		}
          $result = $stmt->get_result();
+		if (!$result)
+ 		{
+    		returnWithError("Getting result failed: " . $stmt->error);
+    		exit();
+  		}	
+		$results = "";
+
          while($row = $result->fetch_assoc())
             {
                 if ($results != "")
@@ -24,6 +53,8 @@
                     $results .= '"Phone":"' . $row["Phone"] . '",';
                     $results .= '"Email":"' . $row["Email"] . '"}';
             }
+			 $stmt->close();
+			$conn->close();
             if($results == "")
                 {
                     returnWithError("Contact Not Found!");
@@ -32,10 +63,10 @@
             else
                 {
                     returnWithInfo($results);
+					exit();
                 }
-        $stmt->close();
-		$conn->close();
-	}   
+       
+ 
     function getRequestInfo()
 	{
 		return json_decode(
@@ -46,16 +77,14 @@
 
 	function sendResultInfoAsJson($obj)
 	{
+		header('Content-type: application/json');
 		echo $obj;
 	}
 	
 	function returnWithError($err)
 	{
-		$retValue = 
-            '{"id":0,"firstName":"","lastName":"","error":"' .
-            $err .
-            '"}';
-		sendResultInfoAsJson($retValue);
+    	$retValue = '{"results":[],"error":"' . $err . '"}';
+    	sendResultInfoAsJson($retValue);
 	}
 	
 	function returnWithInfo($results)
