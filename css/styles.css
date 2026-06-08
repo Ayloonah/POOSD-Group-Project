@@ -117,7 +117,7 @@ body {
     margin-top: 22px;
     border: 0;
     border-radius: 6px;
-    background-color: #3E77A9;
+    background-color: #2d5c85;
     color: #ffffff;
     cursor: pointer;
     font-family: "Lustria", serif;
@@ -126,7 +126,7 @@ body {
 
 #registerButton:hover,
 #registerButton:focus {
-    background-color: #2d5c85;
+    background-color: #20425f;
 }
 
 #registerButton:disabled {
@@ -252,7 +252,7 @@ body {
     min-height: 40px;
     border: 0;
     border-radius: 6px;
-    background-color: #3E77A9;
+    background-color: #2d5c85;
     color: #ffffff;
     cursor: pointer;
     font-family: "Lustria", serif;
@@ -260,7 +260,7 @@ body {
 }
 
 #addContactButton {
-    background-color: #3E77A9;
+    background-color: #2d5c85;
     min-height: 24px;
     color: #ffffff;
     cursor: pointer;
@@ -271,7 +271,7 @@ body {
 }
 
 #addContactButton:hover {
-    background-color: #2d5c85;
+    background-color: #20425f;
 }
 
 #logoutButton {
@@ -346,7 +346,7 @@ body {
     min-height: 28px;
     border: 0;
     border-radius: 6px;
-    background-color: #476B8A;
+    background-color: #2d5c85;
     color: #ffffff;
     cursor: pointer;
     font-family: "Lustria", serif;
@@ -354,7 +354,7 @@ body {
 }
 
 #clearSearchButton:hover {
-    background-color: #34536d;
+    background-color: #20425f;
 }
 
 #clearSearchButton:disabled {
@@ -526,23 +526,23 @@ body {
 }
 
 #createContactButton {
-    background-color: #3E77A9;
+    background-color: #2d5c85;
 }
 
 #updateContactButton {
-    background-color: #3E77A9;
+    background-color: #2d5c85;
 }
 
 #cancelContactButton,
 #cancelEditContactButton,
 #cancelDeleteContactButton {
-    background-color: #476B8A;
+    background-color: #20425f;
 }
 
 #openEditContactButton {
     width: 100%;
     margin-top: 12px;
-    background-color: #3E77A9;
+    background-color: #2d5c85;
 }
 
 #openDeleteContactButton {
@@ -747,7 +747,7 @@ body {
 /* Style for the "Login" Button on login page (index.html) */
 input[type="button"], #loginButton{
     font-family: "Lustria", serif;
-    background-color: #3E77A9;
+    background-color: #2d5c85;
     color: white;
     font-size: 20px;
     letter-spacing: 4px;
@@ -761,7 +761,7 @@ input[type="button"], #loginButton{
 
 /* Style for the "Login" Button when hovered over it on Login Page (index.html)*/
 input[type="button"], #loginButton:hover {
-    background-color: #476B8A;
+    background-color: #20425f;
 }
 
 /* Welcome message style (Right side of Center Box) for login page (index.html) */
