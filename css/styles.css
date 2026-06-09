@@ -455,9 +455,9 @@ body {
     position: relative;
     background-color: #ffffff;
     opacity: 0.75;
-    width: 75%;
+    width: clamp(300px, 50vw, 500px);
     height: auto;
-    margin: auto;
+    margin: 0 auto;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
