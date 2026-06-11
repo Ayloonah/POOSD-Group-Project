@@ -12,6 +12,19 @@ let selectedContactButton = null;
 
 function showDashboardMessage(message) {
     document.getElementById("contactSearchResult").innerHTML = message;
+
+    const searchInput = document.getElementById("contactSearchText");
+    const searchResult = document.getElementById("contactSearchResult");
+
+    // Check if search input actually has a value typed into it
+    if (searchInput && searchInput.value.trim().length > 0) {
+        searchResult.innerHTML = message;
+        searchResult.style.display = "inline-block"; // Show message during search results
+    } else {
+        // If search input is empty, hide the search result message and clear any previous messages
+        searchResult.innerHTML = "";
+        searchResult.style.display = "none";  // Hide when not searching
+    }
 }
 
 function showEmptyContacts() {
