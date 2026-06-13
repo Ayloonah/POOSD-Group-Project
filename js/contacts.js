@@ -2,6 +2,16 @@
  * Contact CRUD and search logic.
  */
 
+/* AS OF SATURDAY, 13TH OF JUNE 2026, CHANGES HAVE BEEN MADE TO NOT LOAD CONTACTS ON PAGE LOAD.
+   THESE CHANGES ARE MADE DUE TO THE REQUIREMENTS OF THE PROFESSOR.
+   I FIRMLY BELIEVE THESE CHANGES DO NOT IMPROVE THE USERS EXPERIENCE.
+   I RECOMMEND REVERTING THESE CHANGES, AFTER THE PRESENTATION.
+   WE ARE USING VERSION CONTROL SO WE CAN EASILY REVERT THESE CHANGES THROUGH GITHUB.
+   HOWEVER I HAVE IMPLEMENTED COMMENTS JUST INCASE WE CANNOT REVERT USING GIT VERSION CONTROL.
+   TO FIND THESE CHANGES, CTRL+F "Presentation" TO SEE THESE CHANGES. 
+   ADDITIONALLY, A SINGLE CHANGE WAS MADE TO CONTACT.HTML
+*/
+
 function isValidEmail(email)
 {
 	const atSign = email.indexOf("@");
@@ -104,7 +114,8 @@ async function searchContacts()
 
 	if( searchText == "" )
 	{
-		loadContacts();
+		showEmptyContacts(); // Added for presentation purposes.
+		//loadContacts();       Removed for presentation purposes.
 		return;
 	}
 
@@ -164,8 +175,9 @@ async function searchContacts()
 function clearSearch()
 {
 	document.getElementById("contactSearchText").value = "";
-	showDashboardMessage("");
-	loadContacts();
+		showEmptyContacts();     // Added for presentation purposes.
+	//showDashboardMessage("");     Removed for presentation purposes.
+	//loadContacts();               Removed for presentation purposes.
 }
 
 async function createContact()
@@ -248,7 +260,8 @@ async function createContact()
 		document.getElementById("contactPhone").value = "";
 		document.getElementById("contactEmail").value = "";
 
-		loadContacts();
+		//loadContacts(); Removed for presentation purposes.
+		showEmptyContacts(); // Added for presentation purposes.
 	}
 	catch(err)
 	{
@@ -422,8 +435,9 @@ async function deleteContact()
 			document.getElementById("deleteContactForm").style.display = "none";
 			document.getElementById("contactCardDetails").style.display = "none";
 			document.getElementById("emptyContactsMessage").style.display = "block";
-			showDashboardMessage("Contact deleted.");
-			loadContacts();
+			//showDashboardMessage("Contact deleted.");
+			//loadContacts();   Removed for presentation purposes.
+			showEmptyContacts(); // Added for presentation purposes.	
 		}, 2500);
 	}
 	catch(err)
