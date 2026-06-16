@@ -89,16 +89,16 @@
 						<h2>Add Contact</h2>
 
 						<label for="contactFirstName">First Name</label>
-						<input type="text" id="contactFirstName" placeholder="First Name">
+						<input type="text" id="contactFirstName" placeholder="First Name" onkeydown="addContactOnEnter(event);">
 
 						<label for="contactLastName">Last Name</label>
-						<input type="text" id="contactLastName" placeholder="Last Name">
+						<input type="text" id="contactLastName" placeholder="Last Name" onkeydown="addContactOnEnter(event);">
 
 						<label for="contactPhone">Phone</label>
-						<input type="tel" id="contactPhone" placeholder="Phone Number" inputmode="numeric" maxlength="10">
+						<input type="tel" id="contactPhone" placeholder="Phone Number" inputmode="numeric" maxlength="10" onkeydown="addContactOnEnter(event);">
 
 						<label for="contactEmail">Email</label>
-						<input type="email" id="contactEmail" placeholder="Email Address">
+						<input type="email" id="contactEmail" placeholder="Email Address" onkeydown="addContactOnEnter(event);">
 
 						<div class="formButtonRow">
 							<button type="button" id="createContactButton" onclick="createContact();">Save Contact</button>
@@ -112,16 +112,16 @@
 						<h2>Edit Contact</h2>
 
 						<label for="editContactFirstName">First Name</label>
-						<input type="text" id="editContactFirstName" placeholder="First Name">
+						<input type="text" id="editContactFirstName" placeholder="First Name" onkeydown="editContactOnEnter(event);">
 
 						<label for="editContactLastName">Last Name</label>
-						<input type="text" id="editContactLastName" placeholder="Last Name">
+						<input type="text" id="editContactLastName" placeholder="Last Name" onkeydown="editContactOnEnter(event);">
 
 						<label for="editContactPhone">Phone</label>
-						<input type="tel" id="editContactPhone" placeholder="Phone Number" inputmode="numeric" maxlength="10">
+						<input type="tel" id="editContactPhone" placeholder="Phone Number" inputmode="numeric" maxlength="10" onkeydown="editContactOnEnter(event);">
 
 						<label for="editContactEmail">Email</label>
-						<input type="email" id="editContactEmail" placeholder="Email Address">
+						<input type="email" id="editContactEmail" placeholder="Email Address" onkeydown="editContactOnEnter(event);">
 
 						<div class="formButtonRow">
 							<button type="button" id="updateContactButton" onclick="updateContact();">Update Contact</button>

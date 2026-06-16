@@ -89,6 +89,22 @@ async function doLogin()
 	}
 }
 
+function loginOnEnter(event)
+{
+    if( event.key == "Enter" )
+    {
+        doLogin();
+    }
+}
+
+function registerOnEnter(event)
+{
+    if( event.key == "Enter" )
+    {
+        doRegister();
+    }
+}
+
 function setRegisterMessage(message, isSuccess)
 {
 	const result = document.getElementById("registerResult");

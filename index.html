@@ -29,10 +29,10 @@
 
             <form onsubmit="return false;">
                 <label for="loginName">Username</label>
-                <input type="text" id="loginName" name="loginName" placeholder="Username" autocomplete="username"><br>
+                <input type="text" id="loginName" name="loginName" placeholder="Username" autocomplete="username" onkeydown="loginOnEnter(event);"><br>
 
                 <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" name="loginPassword" placeholder="Password" autocomplete="current-password"><br><br>
+                <input type="password" id="loginPassword" name="loginPassword" placeholder="Password" autocomplete="current-password" onkeydown="loginOnEnter(event);"><br><br>
 
                 <button type="button" id="loginButton" onclick="doLogin();">Login</button>
             </form>

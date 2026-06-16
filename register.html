@@ -25,27 +25,29 @@
 		<p class="formHelp">Sign up to start saving your personal contacts.</p>
 
 		<label for="registerFirstName">First Name</label>
-		<input type="text" id="registerFirstName" placeholder="First Name" autocomplete="given-name"><br>
+		<input type="text" id="registerFirstName" placeholder="First Name" autocomplete="given-name" onkeydown="registerOnEnter(event);"><br>
 
 		<label for="registerLastName">Last Name</label>
-		<input type="text" id="registerLastName" placeholder="Last Name" autocomplete="family-name"><br>
+		<input type="text" id="registerLastName" placeholder="Last Name" autocomplete="family-name" onkeydown="registerOnEnter(event);"><br>
 
 		<label for="registerLogin">Username</label>
-		<input type="text" id="registerLogin" placeholder="Username" autocomplete="username"><br>
+		<input type="text" id="registerLogin" placeholder="Username" autocomplete="username" onkeydown="registerOnEnter(event);"><br>
 
 		<label for="registerPassword">Password</label>
-        <input type="password"
+        <input type="password" 
             id="registerPassword"
             placeholder="Password"
             autocomplete="new-password"
-            oninput="checkRegisterPasswords();"><br>
+            oninput="checkRegisterPasswords();" 
+            onkeydown="registerOnEnter(event);"><br>
 
         <label for="registerConfirmPassword">Confirm Password</label>
         <input type="password"
             id="registerConfirmPassword"
             placeholder="Confirm Password"
             autocomplete="new-password"
-            oninput="checkRegisterPasswords();"><br>
+            oninput="checkRegisterPasswords();" 
+            onkeydown="registerOnEnter(event);"><br>
 
 		<button type="button" id="registerButton" class="buttons" onclick="doRegister();">Create Account</button>
 		<span id="registerResult" aria-live="polite"></span>

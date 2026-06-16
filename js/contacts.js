@@ -461,3 +461,19 @@ function clearSelectedContact()
 	selectedContactEmail = "";
 	selectedContactButton = null;
 }
+
+function addContactOnEnter(event)
+{
+    if( event.key == "Enter" )
+    {
+        createContact();
+    }
+}
+
+function editContactOnEnter(event)
+{
+    if( event.key == "Enter" )
+    {
+        updateContact();
+    }
+}
